@@ -56,9 +56,15 @@ TensorPlus（北京张量无限科技有限公司）官网。Next.js 16 + Tailwi
   - 自主导航：`navigation-1.jpg`、`navigation-2.webp`
   - 自主执行：`execution-1.webp`、`execution-2.webp`
 
+### 部署
+- **公网预览**: `https://tensorplus-website.netlify.app`（Netlify 免费部署）
+- **GitHub**: `https://github.com/hbzy70720-jackey/tensorplus-website`，push 即自动部署
+- **Netlify 配置**: `netlify.toml`（Node 20 + Prisma generate + @netlify/plugin-nextjs）
+- **前台页面**全部正常访问，**后台管理**需要云数据库（SQLite 在 Serverless 上无法持久化）
+
 ### 待完成
-- **部署预览**: 需要找一个免费临时方案让外地同事预览。Vercel 登录未成功，备选方案：localtunnel (`npx localtunnel --port 3000`)，无需账号一键生成公网链接。
-- 项目首次 git commit 已完成（207d62a6）
+- **后台数据库**: Netlify Serverless 不支持 SQLite 本地文件，需切换到 Turso（免费 SQLite 云服务）或其他云数据库
+- **环境变量**: `ADMIN_PASSWORD`、`JWT_SECRET`、`DATABASE_URL` 需在部署平台配置
 
 ## 技术栈
 - Next.js 16.2.12 (App Router + Turbopack)
@@ -75,7 +81,7 @@ TensorPlus（北京张量无限科技有限公司）官网。Next.js 16 + Tailwi
 - 管理后台地址：`/admin/login`，默认密码：`tensorplus2024`
 - 所有后台 fetch 调用必须加 `credentials: "include"` 才能发送 auth cookie
 - `email` 字段在数据库中为可选（`String?`），CSV导出和前端渲染需处理 null
-- 项目未使用 git 进行版本控制
+- Git 仓库：`https://github.com/hbzy70720-jackey/tensorplus-website`，master 分支
 
 ## 路由清单
 ```
