@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Submission {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  company   String?
+  phone     String?
+  message   String
+  source    String   @default("contact")
+  status    String   @default("new")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  noteEntries NoteEntry[]
+}
+
+model NoteEntry {
+  id           Int        @id @default(autoincrement())
+  submissionId Int
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  content      String
+  createdAt    DateTime   @default(now())
+}
+
+model VisitRecord {
+  id        Int      @id @default(autoincrement())
+  ip        String
+  path      String
+  referer   String?
+  userAgent String?
+  country   String?
+  province  String?
+  city      String?
+  duration  Int      @default(0)
+  createdAt DateTime @default(now())
+}
