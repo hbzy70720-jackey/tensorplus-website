@@ -45,6 +45,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/cases"
+                  className="text-[var(--text-muted)] transition-colors hover:text-white"
+                >
+                  客户案例
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/about"
                   className="text-[var(--text-muted)] transition-colors hover:text-white"
                 >

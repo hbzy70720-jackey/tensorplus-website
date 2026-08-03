@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Noto_Sans_SC } from "next/font/google";
-import Nav from "@/components/layout/nav";
-import Footer from "@/components/layout/footer";
 import PageTracker from "@/components/analytics/page-tracker";
+import PublicShell from "@/components/layout/public-shell";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -57,9 +56,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <PageTracker />
-        <Nav />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <PublicShell>{children}</PublicShell>
       </body>
     </html>
   );

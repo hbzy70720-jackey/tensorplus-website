@@ -31,6 +31,12 @@ export default function AdminLayout({
               表单管理
             </Link>
             <Link
+              href="/admin/cases"
+              className="text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-dark)]"
+            >
+              案例管理
+            </Link>
+            <Link
               href="/admin/visits"
               className="text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-dark)]"
             >

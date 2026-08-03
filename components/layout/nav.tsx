@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/", label: "首页" },
   { href: "/3d-perception", label: "3D感知方案" },
   { href: "/robot", label: "户外作业机器人" },
+  { href: "/cases", label: "客户案例" },
   { href: "/about", label: "关于我们" },
 ];
 

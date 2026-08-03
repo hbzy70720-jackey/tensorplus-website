@@ -42,3 +42,19 @@ model VisitRecord {
   duration  Int      @default(0)
   createdAt DateTime @default(now())
 }
+
+model CaseStudy {
+  id           Int      @id @default(autoincrement())
+  title        String
+  slug         String   @unique
+  description  String?
+  content      String
+  coverImage   String?
+  industry     String?
+  customer     String?
+  deliveryDate String?
+  tags         String   @default("[]")
+  published    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
