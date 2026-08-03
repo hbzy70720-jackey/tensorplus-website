@@ -22,10 +22,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "未选择文件" }, { status: 400 });
   }
 
-  // 验证文件类型
-  const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
-  if (!allowedTypes.includes(file.type)) {
-    return NextResponse.json({ error: "不支持的图片格式" }, { status: 400 });
+  // 验证文件类型（放宽限制，支持 Word 粘贴的各种图片格式）
+  const allowedTypes = [
+    "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml",
+    "image/bmp", "image/x-bmp", "image/x-windows-bmp",
+    "image/tiff", "image/x-tiff",
+    "image/wmf", "image/x-wmf", "image/x-emf", "image/emf",
+    "application/octet-stream",  // 某些系统将剪贴板图片标记为此类型
+  ];
+  const fileExt = path.extname(file.name).toLowerCase();
+  const allowedExts = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".tiff", ".tif", ".wmf", ".emf"];
+
+  if (!allowedTypes.includes(file.type) && !allowedExts.includes(fileExt)) {
+    return NextResponse.json(
+      { error: `不支持的图片格式: ${file.type || fileExt}` },
+      { status: 400 }
+    );
   }
 
   // 限制文件大小 10MB

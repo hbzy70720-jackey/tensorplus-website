@@ -114,6 +114,14 @@ export default function CaseForm({ initialData }: CaseFormProps) {
         <div className="flex items-center gap-3">
           <button
             type="button"
+            onClick={() => router.push("/admin/cases")}
+            disabled={saving}
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-[var(--text-muted)] transition-colors hover:bg-gray-50 disabled:opacity-50"
+          >
+            取消
+          </button>
+          <button
+            type="button"
             onClick={() => handleSubmit(false)}
             disabled={saving}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-[var(--text-dark)] transition-colors hover:bg-gray-50 disabled:opacity-50"

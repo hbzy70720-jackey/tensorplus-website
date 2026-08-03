@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Plus, Search } from "lucide-react";
 import CaseTable from "@/components/admin/case-table";
+import AdminQuickNav from "@/components/admin/admin-quick-nav";
 
 interface CaseItem {
   id: number;
@@ -61,7 +62,9 @@ export default function AdminCasesPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <>
+      <AdminQuickNav active="cases" />
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -153,5 +156,6 @@ export default function AdminCasesPage() {
         </div>
       )}
     </div>
+    </>
   );
 }

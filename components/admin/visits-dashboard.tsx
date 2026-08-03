@@ -302,7 +302,7 @@ export default function VisitsDashboard() {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
-          <table className="w-full">
+          <table className="w-full table-fixed">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50/50">
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
@@ -345,8 +345,10 @@ export default function VisitsDashboard() {
                       {location(r)}
                     </span>
                   </td>
-                  <td className="hidden px-4 py-3 text-sm text-[var(--text-muted)] sm:table-cell">
-                    {r.path}
+                  <td className="hidden px-4 py-3 text-sm text-[var(--text-muted)] sm:table-cell max-w-[240px]">
+                    <span className="block truncate" title={r.path}>
+                      {r.path}
+                    </span>
                   </td>
                   <td className="hidden px-4 py-3 text-sm text-[var(--text-muted)] lg:table-cell">
                     <span className="inline-flex items-center gap-1">

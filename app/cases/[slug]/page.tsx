@@ -134,6 +134,10 @@ export default async function CaseDetailPage({ params }: PageProps) {
                 [&_img]:rounded-xl [&_img]:max-w-full [&_img]:my-6 [&_img]:shadow-md
                 [&_a]:text-[var(--accent)] [&_a]:underline [&_a]:decoration-[var(--accent-glow)] [&_a]:underline-offset-2
                 [&_hr]:my-10 [&_hr]:border-gray-200
+                [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-sm
+                [&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-50 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold
+                [&_td]:border [&_td]:border-gray-300 [&_td]:px-4 [&_td]:py-2
+                [&_tr:nth-child(even)_td]:bg-gray-50/50
               "
               dangerouslySetInnerHTML={{ __html: caseStudy.content }}
             />
