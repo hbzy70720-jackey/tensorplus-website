@@ -67,15 +67,27 @@ export default function ContactInfo() {
         </div>
       </div>
 
-      {/* 微信公众号二维码 */}
-      <div className="mt-8 text-center">
-        <p className="mb-3 text-xs text-[var(--text-muted)]">关注微信公众号</p>
-        <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-xl bg-gray-100">
-          <img
-            src="/qrcode.jpg"
-            alt="TensorPlus微信公众号二维码"
-            className="h-full w-full rounded-xl object-contain"
-          />
+      {/* 微信公众号 & 视频号 */}
+      <div className="mt-8 grid grid-cols-2 gap-4">
+        <div className="text-center">
+          <p className="mb-3 text-xs text-[var(--text-muted)]">微信公众号</p>
+          <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-xl bg-gray-100">
+            <img
+              src="/wechat-oa.jpg"
+              alt="TensorPlus微信公众号二维码"
+              className="h-full w-full rounded-xl object-contain"
+            />
+          </div>
+        </div>
+        <div className="text-center">
+          <p className="mb-3 text-xs text-[var(--text-muted)]">微信视频号</p>
+          <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-xl bg-white">
+            <img
+              src="/wechat-video.jpg"
+              alt="TensorPlus微信视频号二维码"
+              className="h-full w-full rounded-xl object-contain"
+            />
+          </div>
         </div>
       </div>
     </div>
