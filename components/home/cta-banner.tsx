@@ -10,7 +10,7 @@ export default function CTABanner() {
           准备好迎接户外工作自动化了吗？
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-lg text-gray-400">
-          无论您是集成商还是终端用户，我们都能提供量身定制的3D感知与户外机器人解决方案。
+          无论您是机器人企业还是终端用户，我们都能提供业内领先、高性价比的3D感知与户外机器人解决方案。
         </p>
         <div className="mt-8">
           <Button href="/contact" size="lg">

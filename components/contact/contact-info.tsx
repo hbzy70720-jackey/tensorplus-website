@@ -48,9 +48,8 @@ export default function ContactInfo() {
           <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--accent)]" />
           <div>
             <p className="text-xs text-[var(--text-muted)]">电话</p>
-            <p className="text-sm text-[var(--text-muted)]">雷先生：<span className="font-medium text-[var(--text-dark)]">13581638071</span></p>
-            <p className="text-sm text-[var(--text-muted)]">杨先生：<span className="font-medium text-[var(--text-dark)]">18611406172</span></p>
             <p className="text-sm text-[var(--text-muted)]">张先生：<span className="font-medium text-[var(--text-dark)]">18616718989</span></p>
+            <p className="text-sm text-[var(--text-muted)]">杨先生：<span className="font-medium text-[var(--text-dark)]">18611406172</span></p>
           </div>
         </div>
 

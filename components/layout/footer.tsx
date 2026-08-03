@@ -80,9 +80,8 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
                 <div className="space-y-1">
-                  <p className="text-sm text-[var(--text-muted)]">雷先生：<span className="text-white">13581638071</span></p>
-                  <p className="text-sm text-[var(--text-muted)]">杨先生：<span className="text-white">18611406172</span></p>
                   <p className="text-sm text-[var(--text-muted)]">张先生：<span className="text-white">18616718989</span></p>
+                  <p className="text-sm text-[var(--text-muted)]">杨先生：<span className="text-white">18611406172</span></p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
