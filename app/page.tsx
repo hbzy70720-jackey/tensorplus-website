@@ -30,7 +30,7 @@ export default function HomePage() {
         <Container>
           <SectionHeading
             title="行业应用场景"
-            subtitle="深耕五大行业，解决方案已在多个头部客户落地验证"
+            subtitle="深耕四大行业，解决方案已在多个头部客户落地验证"
           />
           <IndustryCarousel />
         </Container>

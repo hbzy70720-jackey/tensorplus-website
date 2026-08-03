@@ -1,40 +1,41 @@
 "use client";
 
-import { Sun, Zap, TreePine, Droplets, Wheat } from "lucide-react";
+import { Sun, Zap, TreePine, Droplets } from "lucide-react";
 import ScrollReveal, { StaggerChild } from "@/components/ui/scroll-reveal";
 
 const industries = [
   {
     icon: Sun,
     name: "光伏",
-    desc: "光伏组件姿态估计，支架识别定位，自动化安装与检测",
+    descriptions: ["光伏组件自动化安装、自动化清洁维护"],
   },
   {
     icon: TreePine,
     name: "林业",
-    desc: "原木姿态估计，木材分级分拣，森林资源普查",
-  },
-  {
-    icon: Wheat,
-    name: "农业",
-    desc: "自主导航耕作，作物识别，精准喷洒与收割",
+    descriptions: ["从种植到林业调查、采伐、测量的全流程智能化"],
   },
   {
     icon: Droplets,
     name: "石油",
-    desc: "管线巡检，储罐检测，钻井平台自动化作业",
+    descriptions: [
+      "管线巡检，储罐检测，钻井平台自动化作业",
+      "石油钻井、石油管道安装与维护的智能化",
+    ],
   },
   {
     icon: Zap,
     name: "电力",
-    desc: "变电站巡检，输电线路检测，设备热成像分析",
+    descriptions: [
+      "变电站巡检，输电线路检测，设备热成像分析",
+      "实现电力设备安装、维护的智能化",
+    ],
   },
 ];
 
 export default function IndustryCarousel() {
   return (
     <ScrollReveal>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {industries.map((industry) => (
           <div
             key={industry.name}
@@ -46,9 +47,11 @@ export default function IndustryCarousel() {
             <h4 className="mb-2 font-semibold text-[var(--text-dark)]">
               {industry.name}
             </h4>
-            <p className="text-xs leading-relaxed text-[var(--text-muted)]">
-              {industry.desc}
-            </p>
+            {industry.descriptions.map((line, i) => (
+              <p key={i} className="text-xs leading-relaxed text-[var(--text-muted)]">
+                {line}
+              </p>
+            ))}
           </div>
         ))}
       </div>
