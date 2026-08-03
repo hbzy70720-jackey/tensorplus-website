@@ -53,35 +53,27 @@ const specs = [
 
 const scenarios = [
   {
-    name: "光伏组件检测",
+    name: "光伏组件安装机器人",
     description:
-      "在光伏电站场景下，3D感知方案可精确识别每一块光伏组件的姿态和位置，引导机械臂完成自动化安装、清洁和更换作业。",
+      "3D视觉感知系统可精确计算出每一块光伏组件的安装位姿，引导机械臂完成完全自动化的组件安装，包括螺栓安装与紧固。",
     points: [
-      "组件姿态估计精度 ±1°",
-      "支持不同类型光伏支架",
+      "组件姿态估计精度±0.5mm，±0.1°",
+      "支持不同类型的光伏组件与支架",
       "强阳光下稳定运行",
     ],
     images: ["pv-1.jpg", "pv-2.jpg", "pv-3.jpg"],
     imageFolder: "perception",
   },
   {
-    name: "原木测量与分拣",
+    name: "原木智能测量",
     description:
-      "在林业场景中，3D相机可快速扫描原木堆，精确测量每根原木的直径、长度和体积，辅助自动分拣和库存管理。",
+      "在林业场景中，3D相机可快速扫描原木堆，精确测量每根原木的直径和体积，用于交易、交割以及生产管理。",
     points: [
-      "单根原木测量时间 <2秒",
-      "直径测量精度 ±2mm",
-      "支持多种树种识别",
+      "单次扫描测量时间 <25秒",
+      "直径测量平均误差 <±2mm",
+      "支持全球各地的检尺标准",
     ],
     images: ["log-1.jpg", "log-2.jpg", "log-3.jpg"],
-    imageFolder: "perception",
-  },
-  {
-    name: "石油、电力巡检",
-    description:
-      "搭载于巡检机器人上，3D感知系统可实时构建设施三维地图，检测设备异常发热、绝缘子破损、管线泄漏等隐患，适用于石油、电力等多种能源场景。",
-    points: ["实时3D建图", "设备缺陷自动识别", "夜间正常作业"],
-    images: ["power-1.jpg", "power-2.jpg", "power-3.jpg"],
     imageFolder: "perception",
   },
 ];
@@ -90,7 +82,7 @@ export default function PerceptionPage() {
   return (
     <>
       <ProductHero
-        title="高精度3D感知方案"
+        title="户外高精度3D感知方案"
         tagline="让机器看懂世界，亚毫米级精度"
         description="户外机器人高精度3D感知系统，包括适用于户外场景的高精度3D相机、机器人3D感知算法，为用户提供开箱即用的视觉解决方案。"
         icon={<Eye className="h-10 w-10 text-[var(--accent-glow)]" />}
