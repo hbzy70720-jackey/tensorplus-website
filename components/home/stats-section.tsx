@@ -3,23 +3,26 @@
 import { useEffect, useRef, useState } from "react";
 import ScrollReveal from "@/components/ui/scroll-reveal";
 
-const stats = [
-  { value: 0.1, unit: "mm", label: "3D成像精度", prefix: "<" },
-  { value: 99.8, unit: "%", label: "识别准确率" },
-  { value: 5, unit: "+", label: "落地行业" },
+interface StatItem {
+  /** 大字展示内容 */
+  display: string;
+  /** 下方说明文字 */
+  label: string;
+  /** 是否数字动画（仅对纯数字 display 生效） */
+  animate?: boolean;
+  /** 动画目标值 */
+  target?: number;
+  /** 小数位数 */
+  decimals?: number;
+}
+
+const stats: StatItem[] = [
+  { display: "<0.1mm, 0.05°", label: "3D感知精度" },
+  { display: "99.999%", label: "动作执行成功率", animate: true, target: 99.999, decimals: 3 },
+  { display: "户外场景可用", label: "不受强阳光、逆光等极端条件干扰" },
 ];
 
-function AnimatedStat({
-  target,
-  unit,
-  label,
-  prefix = "",
-}: {
-  target: number;
-  unit: string;
-  label: string;
-  prefix?: string;
-}) {
+function AnimatedStat({ target, decimals = 1 }: { target: number; decimals: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
@@ -57,14 +60,29 @@ function AnimatedStat({
   }, [target]);
 
   return (
-    <div ref={ref} className="text-center">
+    <span ref={ref}>
+      {count.toFixed(decimals)}
+    </span>
+  );
+}
+
+function StatCard({ stat }: { stat: StatItem }) {
+  const isNumeric = stat.animate && stat.target !== undefined;
+
+  return (
+    <div className="text-center">
       <div className="font-[family-name:var(--font-heading)] text-5xl font-bold tracking-tight text-[var(--accent)] sm:text-6xl">
-        {prefix}
-        {count.toFixed(target < 1 ? 1 : 0)}
-        <span className="text-2xl text-[var(--text-muted)]">{unit}</span>
+        {isNumeric ? (
+          <>
+            <AnimatedStat target={stat.target!} decimals={stat.decimals ?? 1} />
+            <span className="text-2xl text-[var(--text-muted)]">%</span>
+          </>
+        ) : (
+          stat.display
+        )}
       </div>
-      <div className="mt-2 text-sm font-medium uppercase tracking-wider text-[var(--text-muted)]">
-        {label}
+      <div className="mt-2 text-sm font-medium text-[var(--text-muted)]">
+        {stat.label}
       </div>
     </div>
   );
@@ -75,13 +93,7 @@ export default function StatsSection() {
     <ScrollReveal>
       <div className="grid gap-8 sm:grid-cols-3">
         {stats.map((stat) => (
-          <AnimatedStat
-            key={stat.label}
-            target={stat.value}
-            unit={stat.unit}
-            label={stat.label}
-            prefix={stat.prefix}
-          />
+          <StatCard key={stat.label} stat={stat} />
         ))}
       </div>
     </ScrollReveal>

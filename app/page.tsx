@@ -41,7 +41,7 @@ export default function HomePage() {
         <Container>
           <SectionHeading
             title="核心优势"
-            subtitle="以数据说话的硬实力"
+            subtitle="实现复杂场景下的极高精度与可靠性"
           />
           <StatsSection />
         </Container>
