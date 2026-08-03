@@ -12,6 +12,11 @@
 /prisma/dev.db
 /prisma/dev.db-journal
 
+# uploads & temp
+/public/uploads/cases/*
+!public/uploads/cases/.gitkeep
+/temp/
+
 # superpowers workspace
 /.superpowers/
 
