@@ -27,14 +27,12 @@ function CaseListInner() {
 
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
 
   const fetchCases = useCallback(async () => {
     setLoading(true);
-    setError("");
     try {
       const params = new URLSearchParams();
       if (industry) params.set("industry", industry);
@@ -47,11 +45,9 @@ function CaseListInner() {
         setCases(data.cases);
         setTotal(data.total);
         setTotalPages(data.totalPages);
-      } else {
-        setError("加载失败");
       }
     } catch {
-      setError("网络错误");
+      // 网络错误时同样显示占位内容
     } finally {
       setLoading(false);
     }
@@ -81,23 +77,21 @@ function CaseListInner() {
         </div>
       )}
 
-      {/* Error */}
-      {error && (
+      {/* Empty / Error — 统一显示友好提示 */}
+      {!loading && cases.length === 0 && (
         <div className="py-16 text-center">
-          <p className="text-red-500">{error}</p>
-        </div>
-      )}
-
-      {/* Empty */}
-      {!loading && !error && cases.length === 0 && (
-        <div className="py-16 text-center">
-          <p className="text-lg text-[var(--text-muted)]">暂无案例</p>
-          <p className="mt-2 text-sm text-gray-400">敬请期待更多客户案例</p>
+          <div className="mx-auto mb-4 inline-flex rounded-2xl bg-blue-500/10 p-4">
+            <svg className="h-10 w-10 text-[var(--accent-glow)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+            </svg>
+          </div>
+          <p className="text-lg font-semibold text-[var(--text-muted)]">版块升级中</p>
+          <p className="mt-2 text-sm text-gray-400">精彩案例即将上线，敬请期待</p>
         </div>
       )}
 
       {/* Grid */}
-      {!loading && !error && cases.length > 0 && (
+      {!loading && cases.length > 0 && (
         <>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {cases.map((c) => (
