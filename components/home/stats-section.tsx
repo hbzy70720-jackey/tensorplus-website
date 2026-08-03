@@ -71,16 +71,18 @@ function StatCard({ stat }: { stat: StatItem }) {
 
   return (
     <div className="text-center">
-      <div className="font-[family-name:var(--font-heading)] text-5xl font-bold tracking-tight text-[var(--accent)] sm:text-6xl">
-        {isNumeric ? (
-          <>
-            <AnimatedStat target={stat.target!} decimals={stat.decimals ?? 1} />
-            <span className="text-2xl text-[var(--text-muted)]">%</span>
-          </>
-        ) : (
-          stat.display
-        )}
-      </div>
+      {isNumeric ? (
+        /* 数字动画：保持大号冲击力 */
+        <div className="font-[family-name:var(--font-heading)] text-5xl font-bold tracking-tight text-[var(--accent)] sm:text-6xl">
+          <AnimatedStat target={stat.target!} decimals={stat.decimals ?? 1} />
+          <span className="text-2xl text-[var(--text-muted)]">%</span>
+        </div>
+      ) : (
+        /* 文本展示：缩小字号，<0.1mm, 0.05° 不换行 */
+        <div className="whitespace-nowrap font-[family-name:var(--font-heading)] text-3xl font-bold tracking-tight text-[var(--accent)] sm:text-4xl">
+          {stat.display}
+        </div>
+      )}
       <div className="mt-2 text-sm font-medium text-[var(--text-muted)]">
         {stat.label}
       </div>
