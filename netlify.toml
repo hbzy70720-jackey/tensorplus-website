@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20.0.0"
+  DATABASE_URL = "file:./dev.db"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
