@@ -17,18 +17,12 @@ const industries = [
   {
     icon: Droplets,
     name: "石油",
-    descriptions: [
-      "管线巡检，储罐检测，钻井平台自动化作业",
-      "石油钻井、石油管道安装与维护的智能化",
-    ],
+    descriptions: ["石油钻井、石油管道安装与维护的智能化"],
   },
   {
     icon: Zap,
     name: "电力",
-    descriptions: [
-      "变电站巡检，输电线路检测，设备热成像分析",
-      "实现电力设备安装、维护的智能化",
-    ],
+    descriptions: ["实现电力设备安装、维护的智能化"],
   },
 ];
 
