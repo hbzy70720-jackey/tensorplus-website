@@ -1,0 +1,25 @@
+# Next构建产物
+.next/
+out/
+dist/
+build/
+
+# 依赖库
+node_modules/
+.pnp/
+
+# git内部
+.git/
+
+# 巨型锁文件
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# 日志、临时文件
+*.log
+*.tmp
+.vscode/
+
+# prisma迁移大SQL
+prisma/migrations/*.sql

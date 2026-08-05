@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Camera, ScanEye, Sun, Eye } from "lucide-react";
 import ProductHero from "@/components/product/product-hero";
 import FeatureGrid from "@/components/product/feature-grid";
-import SpecTable from "@/components/product/spec-table";
+import ProductCarousel from "@/components/product/product-carousel";
 import ScenarioShowcase from "@/components/product/scenario-showcase";
 import ProductCTA from "@/components/product/product-cta";
 import Section from "@/components/layout/section";
@@ -39,16 +39,76 @@ const features = [
   },
 ];
 
-const specs = [
-  { param: "3D成像精度", value: "<0.1mm @ 1m距离" },
-  { param: "工作距离", value: "0.3m - 5m" },
-  { param: "视场角 (FOV)", value: "60° × 45° (可定制)" },
-  { param: "点云分辨率", value: "1920 × 1200" },
-  { param: "帧率", value: "最高 30fps" },
-  { param: "防护等级", value: "IP67" },
-  { param: "工作温度", value: "-20°C ~ +60°C" },
-  { param: "数据接口", value: "GigE / USB 3.0" },
-  { param: "SDK支持", value: "C++ / Python / ROS" },
+const products = [
+  {
+    name: "Tensor Plus",
+    imagePath: "/uploads/perception/tensor-plus.png",
+    imagePlaceholder: "tensor-plus.png",
+    specs: [
+      { param: "尺寸", value: "275×125×81.5mm" },
+      { param: "重量", value: "2kg" },
+      { param: "供电", value: "12V DC" },
+      { param: "峰值功率", value: "30W" },
+      { param: "通信", value: "千兆以太网" },
+      { param: "工作温度", value: "-20℃~+60℃" },
+      { param: "工业防护", value: "IP65" },
+    ],
+    performance: [
+      { param: "分辨率", value: "彩色图像：4056×3040 、3D图像：4056×3040" },
+      { param: "视场角", value: "水平：76°、垂直：61°" },
+      { param: "成像速度", value: "8~12s@4K" },
+      { param: "工作距离", value: "0.8~2.5m" },
+      { param: "Z值精度", value: "0.27mm@1.2m" },
+      { param: "输出数据", value: "RGB+对齐的3D图像" },
+      { param: "编程接口", value: "C++ /Python SDK" },
+    ],
+  },
+  {
+    name: "Tensor Eye",
+    imagePath: "/uploads/perception/tensor-eye.png",
+    imagePlaceholder: "tensor-eye.png",
+    specs: [
+      { param: "尺寸", value: "246×143×81mm" },
+      { param: "重量", value: "1kg" },
+      { param: "供电", value: "12V DC" },
+      { param: "峰值功率", value: "15W" },
+      { param: "通信", value: "千兆以太网" },
+      { param: "工作温度", value: "-20℃~+60℃" },
+      { param: "工业防护", value: "IP65" },
+    ],
+    performance: [
+      { param: "分辨率", value: "彩色图像：3072×2048、3D图像：3072×2048" },
+      { param: "视场角", value: "水平：55.6°、垂直：41.7°" },
+      { param: "成像速度", value: "4~8s@4K" },
+      { param: "工作距离", value: "0.8~2.5m" },
+      { param: "Z值精度", value: "0.27mm@1.2m" },
+      { param: "输出数据", value: "RGB+对齐的3D图像" },
+      { param: "编程接口", value: "C++ /Python SDK" },
+    ],
+  },
+  {
+    name: "Tensor Mini",
+    imagePath: "/uploads/perception/tensor-mini.png",
+    imagePlaceholder: "tensor-mini.png",
+    specs: [
+      { param: "尺寸", value: "126×147×81mm" },
+      { param: "重量", value: "0.6kg" },
+      { param: "供电", value: "12V DC" },
+      { param: "功率", value: "15W" },
+      { param: "通信", value: "千兆以太网" },
+      { param: "工作温度", value: "-20℃~+60℃" },
+      { param: "工业防护", value: "IP65" },
+    ],
+    performance: [
+      { param: "分辨率", value: "彩色图像：1536×1024、3D图像：1536×1024" },
+      { param: "视场角", value: "水平：55.6°、垂直：41.7°" },
+      { param: "成像速度", value: "1~4s@4K" },
+      { param: "工作距离", value: "0.8~2.5m" },
+      { param: "Z值精度", value: "0.10mm@0.4m" },
+      { param: "输出数据", value: "RGB+对齐的3D图像" },
+      { param: "编程接口", value: "C++ /Python SDK" },
+    ],
+  },
 ];
 
 const scenarios = [
@@ -101,10 +161,10 @@ export default function PerceptionPage() {
       <Section variant="gray">
         <Container>
           <SectionHeading
-            title="技术规格"
-            subtitle="专业级工业3D相机参数"
+            title="产品系列"
+            subtitle="三款型号，覆盖不同应用场景"
           />
-          <SpecTable specs={specs} />
+          <ProductCarousel products={products} />
         </Container>
       </Section>
 
