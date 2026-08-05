@@ -93,16 +93,16 @@ const techHighlights = [
 ];
 
 const specs = [
-  { param: "导航方式", value: "RTK-GNSS + 激光SLAM + 视觉融合" },
-  { param: "定位精度", value: "±2cm (RTK) / ±5cm (SLAM)" },
-  { param: "最大速度", value: "2.5 m/s" },
-  { param: "续航时间", value: "6-8小时 (标准工况)" },
-  { param: "爬坡能力", value: "30°" },
-  { param: "涉水深度", value: "400mm" },
-  { param: "防护等级", value: "IP65" },
-  { param: "工作温度", value: "-25°C ~ +55°C" },
-  { param: "通信方式", value: "4G/5G + WiFi + 数传电台" },
-  { param: "控制模式", value: "全自主 / 遥控 / 监航" },
+  { param: "尺寸", value: "1832×1100×1400mm" },
+  { param: "重量", value: "1750kg" },
+  { param: "动力", value: "电动" },
+  { param: "最大行驶速度", value: "12km/h" },
+  { param: "最大爬坡角度", value: "30°" },
+  { param: "工作温度", value: "-20℃~+60℃" },
+  { param: "工业防护", value: "IP65" },
+  { param: "电池续航", value: "5h" },
+  { param: "控制方式", value: "视觉自动引导+规划" },
+  { param: "底盘类型", value: "履带式" },
 ];
 
 export default function RobotPage() {
