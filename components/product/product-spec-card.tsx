@@ -64,9 +64,9 @@ export default function ProductSpecCard({
 
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* 左侧：产品图片 */}
-        <div className="relative flex w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-50 p-4 lg:w-[42%]">
+        <div className="relative flex w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-4 lg:w-[42%]">
           {(imageError || !imageLoaded) && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 bg-gray-50 text-[var(--text-muted)]">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 bg-white text-[var(--text-muted)]">
               <ImageIcon className="h-10 w-10 opacity-30" />
               <span className="text-sm opacity-50">产品图片</span>
               <span className="text-xs opacity-35">{imagePlaceholder}</span>
