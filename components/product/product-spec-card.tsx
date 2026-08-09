@@ -63,10 +63,10 @@ export default function ProductSpecCard({
       </h3>
 
       <div className="flex flex-col gap-6 lg:flex-row">
-        {/* 左侧：产品图片 */}
-        <div className="relative flex w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-4 lg:w-[42%]">
+        {/* 左侧：产品图片 — 画板卡片风格 */}
+        <div className="relative flex w-full flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-[#f7f8fc] via-white to-[#eef1f8] p-6 shadow-[inset_0_2px_12px_rgba(0,0,0,0.04)] ring-1 ring-gray-100/50 lg:w-[40%]">
           {(imageError || !imageLoaded) && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 bg-white text-[var(--text-muted)]">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-[2px] text-[var(--text-muted)]">
               <ImageIcon className="h-10 w-10 opacity-30" />
               <span className="text-sm opacity-50">产品图片</span>
               <span className="text-xs opacity-35">{imagePlaceholder}</span>
