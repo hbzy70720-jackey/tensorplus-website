@@ -103,7 +103,7 @@ const products = [
       { param: "分辨率", value: "彩色图像：1536×1024、3D图像：1536×1024" },
       { param: "视场角", value: "水平：55.6°、垂直：41.7°" },
       { param: "成像速度", value: "1~4s@4K" },
-      { param: "工作距离", value: "0.8~2.5m" },
+      { param: "工作距离", value: "0.4~1.3m" },
       { param: "Z值精度", value: "0.10mm@0.4m" },
       { param: "输出数据", value: "RGB+对齐的3D图像" },
       { param: "编程接口", value: "C++ /Python SDK" },
