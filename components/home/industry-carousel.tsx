@@ -12,7 +12,7 @@ const industries = [
   {
     icon: TreePine,
     name: "林业",
-    descriptions: ["从种植到林业调查、采伐、测量的全流程智能化"],
+    descriptions: ["从种植到生产加工的全流程智能化"],
   },
   {
     icon: Droplets,

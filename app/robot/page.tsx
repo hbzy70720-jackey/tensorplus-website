@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bot, Sun, Sparkles, Sunset, Map, Route, Radar, ClipboardList, RefreshCw, Crosshair } from "lucide-react";
+import { Bot, Sun, Sparkles, Sunset, ScanEye, Gauge, ClipboardList, RefreshCw, Crosshair } from "lucide-react";
 import ProductHero from "@/components/product/product-hero";
 import SpecTable from "@/components/product/spec-table";
 import TechHighlights from "@/components/product/tech-highlights";
@@ -43,23 +43,18 @@ const techHighlights = [
   {
     title: "自主导航",
     description:
-      "在野外复杂地形下实现完全自主的导航，包括SLAM实时建图定位、智能路径规划和动态避障。使得机器人在复杂的路况环境下能实现完全的自动行走。",
+      "在野外复杂地形下实现完全自主的导航，机器人自主探索，感知周围环境，自动规划路径，控制底盘运动。",
     highlight: "RTK定位精度：±2cm",
     subItems: [
       {
-        icon: <Map className="h-5 w-5" />,
-        title: "SLAM建图",
-        description: "实时构建环境3D地图，支持无GPS场景自主定位。",
+        icon: <ScanEye className="h-5 w-5" />,
+        title: "环境感知",
+        description: "多传感器3D感知方案，构建精确的3D数字地图与作业任务地图。",
       },
       {
-        icon: <Route className="h-5 w-5" />,
-        title: "路径规划",
-        description: "全局+局部双层规划，最优路径动态调整。",
-      },
-      {
-        icon: <Radar className="h-5 w-5" />,
-        title: "动态避障",
-        description: "实时感知障碍物，毫秒级避障决策与绕行。",
+        icon: <Gauge className="h-5 w-5" />,
+        title: "自主控制",
+        description: "端到端路径规划+底盘控制与基于3D网格的路径规范方案融合，确保高精度、高可靠性，有效应对各种复杂的corner case。",
       },
     ],
     images: ["navigation-1.jpg", "navigation-2.webp"],
