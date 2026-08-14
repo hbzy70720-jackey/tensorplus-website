@@ -37,7 +37,7 @@ const techHighlights = [
         description: "逆光场景下保持成像质量不衰减，细节不丢失。",
       },
     ],
-    images: ["perception-1.png", "perception-2.png", "perception-3.png", "perception-4.png"],
+    images: ["perception-1.webp", "perception-2.webp", "perception-3.webp", "perception-4.webp"],
     imageFolder: "robot",
   },
   {
