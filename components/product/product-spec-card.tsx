@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import SmartImage from "@/components/ui/smart-image";
 import { ImageIcon } from "lucide-react";
 
 interface SpecRow {
@@ -73,15 +73,12 @@ export default function ProductSpecCard({
             </div>
           )}
 
-          <Image
+          <SmartImage
             src={imagePath}
             alt={name}
-            width={1000}
-            height={563}
             className="relative z-0 h-auto w-full object-contain"
             onLoad={() => setImageLoaded(true)}
             onError={() => setImageError(true)}
-            unoptimized
           />
         </div>
 

@@ -8,7 +8,7 @@ interface Scenario {
   name: string;
   description: string;
   points: string[];
-  /** 图片文件名数组，如 ["scenario-1.jpg", "scenario-2.jpg"] */
+  /** 图片文件名数组（不含扩展名，自动匹配格式），如 ["scenario-1", "scenario-2"] */
   images?: string[];
   /** 图片所在 public/images/ 下的子目录 */
   imageFolder?: string;

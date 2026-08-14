@@ -42,7 +42,7 @@ export default function IndustryCarousel() {
               {industry.name}
             </h4>
             {industry.descriptions.map((line, i) => (
-              <p key={i} className="text-xs leading-relaxed text-[var(--text-muted)]">
+              <p key={i} className="text-sm leading-relaxed text-[var(--text-muted)]">
                 {line}
               </p>
             ))}

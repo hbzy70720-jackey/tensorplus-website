@@ -37,7 +37,7 @@ const techHighlights = [
         description: "逆光场景下保持成像质量不衰减，细节不丢失。",
       },
     ],
-    images: ["perception-1.webp", "perception-2.webp", "perception-3.webp", "perception-4.webp"],
+    images: ["perception-1", "perception-2", "perception-3", "perception-4"],
     imageFolder: "robot",
   },
   {
@@ -57,7 +57,7 @@ const techHighlights = [
         description: "端到端路径规划+底盘控制与基于3D网格的路径规范方案融合，确保高精度、高可靠性，有效应对各种复杂的corner case。",
       },
     ],
-    images: ["navigation-1.jpg", "navigation-2.webp"],
+    images: ["navigation-1", "navigation-2"],
     imageFolder: "robot",
   },
   {
@@ -82,7 +82,7 @@ const techHighlights = [
         description: "3D感知引导机械臂，操作重复精度±0.5mm。",
       },
     ],
-    images: ["execution-1.webp", "execution-2.webp"],
+    images: ["execution-1", "execution-2"],
     imageFolder: "robot",
   },
 ];

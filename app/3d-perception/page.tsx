@@ -42,8 +42,8 @@ const features = [
 const products = [
   {
     name: "Tensor Plus",
-    imagePath: "/uploads/perception/tensor-plus.png",
-    imagePlaceholder: "tensor-plus.png",
+    imagePath: "/uploads/perception/tensor-plus",
+    imagePlaceholder: "tensor-plus",
     specs: [
       { param: "尺寸", value: "275×125×81.5mm" },
       { param: "重量", value: "2kg" },
@@ -65,8 +65,8 @@ const products = [
   },
   {
     name: "Tensor Eye",
-    imagePath: "/uploads/perception/tensor-eye.png",
-    imagePlaceholder: "tensor-eye.png",
+    imagePath: "/uploads/perception/tensor-eye",
+    imagePlaceholder: "tensor-eye",
     specs: [
       { param: "尺寸", value: "246×143×81mm" },
       { param: "重量", value: "1kg" },
@@ -88,8 +88,8 @@ const products = [
   },
   {
     name: "Tensor Mini",
-    imagePath: "/uploads/perception/tensor-mini.png",
-    imagePlaceholder: "tensor-mini.png",
+    imagePath: "/uploads/perception/tensor-mini",
+    imagePlaceholder: "tensor-mini",
     specs: [
       { param: "尺寸", value: "126×147×81mm" },
       { param: "重量", value: "0.6kg" },
@@ -121,7 +121,7 @@ const scenarios = [
       "支持不同类型的光伏组件与支架",
       "强阳光下稳定运行",
     ],
-    images: ["pv-1.jpg", "pv-2.jpg", "pv-3.jpg"],
+    images: ["pv-1", "pv-2", "pv-3"],
     imageFolder: "perception",
   },
   {
@@ -133,7 +133,7 @@ const scenarios = [
       "直径测量平均误差 <±2mm",
       "支持全球各地的检尺标准",
     ],
-    images: ["log-1.jpg", "log-2.jpg", "log-3.jpg"],
+    images: ["log-1", "log-2", "log-3"],
     imageFolder: "perception",
   },
 ];

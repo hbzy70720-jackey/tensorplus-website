@@ -3,9 +3,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import SmartImage from "@/components/ui/smart-image";
+import { imageCandidates } from "@/lib/image";
 
 interface ImageCarouselProps {
-  /** 图片文件名数组，例如 ["perception-pv-1.jpg", "perception-pv-2.jpg"] */
+  /** 图片文件名数组（不含扩展名，自动匹配格式），例如 ["perception-pv-1", "perception-pv-2"] */
   images: string[];
   /** 图片所在子目录，例如 "perception" */
   folder: string;
@@ -31,9 +33,11 @@ export default function ImageCarousel({
     );
     if (toPreload.length === 0) return;
     toPreload.forEach((i) => {
-      const img = new Image();
-      img.onload = () => setLoaded((prev) => ({ ...prev, [i]: true }));
-      img.src = `/images/${folder}/${images[i]}`;
+      imageCandidates(`/images/${folder}/${images[i]}`).forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+      setLoaded((prev) => ({ ...prev, [i]: true }));
     });
   }, [current, images, folder, loaded]);
 
@@ -87,7 +91,7 @@ export default function ImageCarousel({
               i === current ? "opacity-100" : "opacity-0 pointer-events-none"
             )}
           >
-            <img
+            <SmartImage
               src={`/images/${folder}/${img}`}
               alt={`${alt} - ${i + 1}`}
               className="h-full w-full object-cover"

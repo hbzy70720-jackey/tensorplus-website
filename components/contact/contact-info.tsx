@@ -2,6 +2,7 @@
 
 import { Mail, Phone, MapPin, Copy, Check } from "lucide-react";
 import { useState } from "react";
+import SmartImage from "@/components/ui/smart-image";
 
 function CopyableText({ text, label }: { text: string; label: string }) {
   const [copied, setCopied] = useState(false);
@@ -71,8 +72,8 @@ export default function ContactInfo() {
         <div className="text-center">
           <p className="mb-3 text-xs text-[var(--text-muted)]">微信公众号</p>
           <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-xl bg-gray-100">
-            <img
-              src="/wechat-oa.jpg"
+            <SmartImage
+              src="/wechat-oa"
               alt="TensorPlus微信公众号二维码"
               className="h-full w-full rounded-xl object-contain"
             />
@@ -81,8 +82,8 @@ export default function ContactInfo() {
         <div className="text-center">
           <p className="mb-3 text-xs text-[var(--text-muted)]">微信视频号</p>
           <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-xl bg-white">
-            <img
-              src="/wechat-video.jpg"
+            <SmartImage
+              src="/wechat-video"
               alt="TensorPlus微信视频号二维码"
               className="h-full w-full rounded-xl object-contain"
             />

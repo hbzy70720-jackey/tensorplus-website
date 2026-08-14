@@ -15,7 +15,7 @@ interface TechHighlight {
   description: string;
   highlight?: string;
   subItems: TechSubItem[];
-  /** 图片文件名数组，如 ["perception-1.jpg", "perception-2.jpg"] */
+  /** 图片文件名数组（不含扩展名，自动匹配格式），如 ["perception-1", "perception-2"] */
   images?: string[];
   /** 图片所在 public/images/ 下的子目录 */
   imageFolder?: string;
