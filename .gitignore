@@ -15,6 +15,7 @@
 # uploads & temp
 /public/uploads/cases/*
 !public/uploads/cases/.gitkeep
+/uploads/
 /temp/
 
 # superpowers workspace

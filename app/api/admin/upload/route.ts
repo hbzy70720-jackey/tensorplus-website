@@ -51,11 +51,15 @@ export async function POST(request: NextRequest) {
   // 生成唯一文件名
   const ext = path.extname(file.name) || ".png";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "cases");
+
+  // 图片存到 public 之外的 uploads 目录。若放在 public 里，
+  // 生产环境 next start 只在启动时扫描一次 public，运行时新上传的文件不会被服务，
+  // 导致图片 404。改用专门的读取接口 /api/uploads/cases/... 来取图。
+  const uploadDir = path.join(process.cwd(), "uploads", "cases");
 
   await mkdir(uploadDir, { recursive: true });
   await writeFile(path.join(uploadDir, filename), buffer);
 
-  const url = `/uploads/cases/${filename}`;
+  const url = `/api/uploads/cases/${filename}`;
   return NextResponse.json({ url, filename });
 }

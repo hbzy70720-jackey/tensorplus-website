@@ -14,12 +14,18 @@ export async function proxy(request: NextRequest) {
   // 验证 token
   const token = request.cookies.get(getAuthCookieName())?.value;
   if (!token) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return new NextResponse(null, {
+      status: 307,
+      headers: { Location: "/admin/login" },
+    });
   }
 
   const payload = await verifyToken(token);
   if (!payload) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+    return new NextResponse(null, {
+      status: 307,
+      headers: { Location: "/admin/login" },
+    });
   }
 
   return NextResponse.next();

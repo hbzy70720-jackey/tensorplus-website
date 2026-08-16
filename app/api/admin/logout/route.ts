@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { clearAuthCookie } from "@/lib/auth";
 
-export async function POST(request: Request) {
-  // 动态取当前访问的 origin，避免硬编码 localhost，适配本地/宝塔/华为云等任意部署环境
-  const origin = new URL(request.url).origin;
-  const response = NextResponse.redirect(new URL("/admin/login", origin));
+export async function POST() {
+  // 用相对路径跳转，浏览器会自动在当前域名下跳转，
+  // 彻底避免反向代理（宝塔/华为云）把 origin 解析成 localhost 的问题
+  const response = new NextResponse(null, { status: 303 });
+  response.headers.set("Location", "/admin/login");
   response.headers.append("Set-Cookie", clearAuthCookie());
   return response;
 }

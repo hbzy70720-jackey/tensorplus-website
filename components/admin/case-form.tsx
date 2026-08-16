@@ -34,6 +34,15 @@ interface CaseFormProps {
   };
 }
 
+// 把标签文本（中英文逗号分隔）拆分成数组的 JSON 字符串
+function tagsToJSON(text: string): string {
+  const tags = text
+    .split(/[,，]/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+  return JSON.stringify(tags);
+}
+
 export default function CaseForm({ initialData }: CaseFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -56,6 +65,15 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     published: initialData?.published ?? false,
   });
 
+  // 标签的原始文本（含逗号，用户可自由编辑；提交时再拆分成数组）
+  const [tagsText, setTagsText] = useState(() => {
+    try {
+      return (JSON.parse(form.tags) as string[]).join("，");
+    } catch {
+      return "";
+    }
+  });
+
   const updateField = <K extends keyof CaseFormData>(
     key: K,
     value: CaseFormData[K]
@@ -67,7 +85,11 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     setSaving(true);
     setError("");
 
-    const payload = { ...form, published: publishAfterSave ? true : form.published };
+    const payload = {
+      ...form,
+      tags: tagsToJSON(tagsText),
+      published: publishAfterSave ? true : form.published,
+    };
 
     try {
       const url = savedIdRef.current
@@ -115,7 +137,11 @@ export default function CaseForm({ initialData }: CaseFormProps) {
           method,
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify({ ...form, published: form.published }),
+          body: JSON.stringify({
+            ...form,
+            tags: tagsToJSON(tagsText),
+            published: form.published,
+          }),
         });
         const data = await res.json();
         if (res.ok && data.case?.id) {
@@ -135,7 +161,7 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     return () => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     };
-  }, [form]);
+  }, [form, tagsText]);
 
   const inputClass =
     "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[var(--text-dark)] transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]";
@@ -297,22 +323,8 @@ export default function CaseForm({ initialData }: CaseFormProps) {
               <label className={labelClass}>标签（逗号分隔）</label>
               <input
                 type="text"
-                value={
-                  (() => {
-                    try {
-                      return JSON.parse(form.tags).join("，");
-                    } catch {
-                      return "";
-                    }
-                  })()
-                }
-                onChange={(e) => {
-                  const tags = e.target.value
-                    .split(/[,，]/)
-                    .map((t) => t.trim())
-                    .filter(Boolean);
-                  updateField("tags", JSON.stringify(tags));
-                }}
+                value={tagsText}
+                onChange={(e) => setTagsText(e.target.value)}
                 className={inputClass}
                 placeholder="例如：机器人安装，3D测量，自动化"
               />
