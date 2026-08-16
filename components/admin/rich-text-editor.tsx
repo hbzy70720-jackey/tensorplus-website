@@ -1,16 +1,47 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu, FloatingMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import ImageExtension from "@tiptap/extension-image";
-import LinkExtension from "@tiptap/extension-link";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import { Highlight } from "@tiptap/extension-highlight";
 import { FontFamily } from "@tiptap/extension-font-family";
-import { Underline as UnderlineExt } from "@tiptap/extension-underline";
 import { Table, TableRow, TableCell, TableHeader } from "@tiptap/extension-table";
 import { Extension } from "@tiptap/core";
+import {
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Code,
+  List,
+  ListOrdered,
+  Link as LinkIcon,
+  Heading1,
+  Heading2,
+  Heading3,
+  Undo,
+  Redo,
+  Image as ImageIcon,
+  Upload,
+  Palette,
+  Highlighter,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  IndentIncrease,
+  Minus,
+  RemoveFormatting,
+  Plus,
+  Quote,
+  Code2,
+  Table2,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { useCallback, useState } from "react";
 
 /** 统一管理段落级样式（line-height / text-indent / text-align），
  *  避免多个扩展的 style 属性互相覆盖。 */
@@ -35,7 +66,6 @@ const ParagraphStyle = Extension.create({
             },
             renderHTML: (attrs) => {
               if (!attrs.paraStyle) return {};
-              // 拆分回独立样式
               const styles: string[] = [];
               for (const part of (attrs.paraStyle as string).split(";")) {
                 const [key, val] = part.split(":");
@@ -51,124 +81,159 @@ const ParagraphStyle = Extension.create({
     ];
   },
 });
-import {
-  Bold,
-  Italic,
-  Strikethrough,
-  Code,
-  List,
-  ListOrdered,
-  Link as LinkIcon,
-  Heading1,
-  Heading2,
-  Heading3,
-  Undo,
-  Redo,
-  Image as ImageIcon,
-  Upload,
-  Palette,
-  Highlighter,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Underline,
-} from "lucide-react";
-import { useCallback, useState } from "react";
+
+/** 字号扩展：给文本样式（textStyle）增加 font-size 属性，支持 Word 粘贴字号保留 */
+const FontSize = Extension.create({
+  name: "fontSize",
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["textStyle"],
+        attributes: {
+          fontSize: {
+            default: null,
+            parseHTML: (el) => el.style.fontSize || null,
+            renderHTML: (attrs) => {
+              if (!attrs.fontSize) return {};
+              return { style: `font-size:${attrs.fontSize}` };
+            },
+          },
+        },
+      },
+    ];
+  },
+});
+
+/** 文字颜色色板（参考微信的常用色） */
+const TEXT_COLORS = [
+  "#000000", "#333333", "#595959", "#808080", "#999999", "#bfbfbf",
+  "#d32f2f", "#ff4d4f", "#ff7a45", "#fa8c16", "#fadb14", "#a0d911",
+  "#52c41a", "#13c2c2", "#1890ff", "#2f54eb", "#722ed1", "#eb2f96",
+];
+
+/** 高亮（背景）色板 —— 浅色系 */
+const HIGHLIGHT_COLORS = [
+  "#ffff00", "#ffd591", "#ffadd2", "#ff9c6e", "#b7eb8f", "#87e8de",
+  "#91d5ff", "#adc6ff", "#d3adf7", "#fff1b8", "#f4ffb8", "#e6fffb",
+];
+
+/** 字号档位（参考微信的 7 档） */
+const FONT_SIZES = ["12px", "14px", "16px", "18px", "20px", "24px", "30px"];
 
 interface RichTextEditorProps {
   content: string;
   onChange: (html: string) => void;
 }
 
-/** 从 RTF 剪贴板数据中提取图片（Word 图片通过 VML+RTF 方式粘贴时用） */
-function extractImagesFromRtf(rtf: string, debug?: (msg: string) => void): File[] {
-  const files: File[] = [];
+/** 插入菜单可插入的块类型 */
+type InsertBlockType =
+  | "h1" | "h2" | "h3"
+  | "bulletList" | "orderedList"
+  | "blockquote" | "codeBlock" | "hr" | "table";
 
-  // 手动解析 {\pict ...} 块（处理嵌套 + 大量 hex 数据）
+/** 插入菜单项 */
+function InsertItem({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: LucideIcon;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100"
+    >
+      <Icon className="h-4 w-4 shrink-0 text-gray-400" />
+      {label}
+    </button>
+  );
+}
+
+/** 将 hex 字符串解码为字节数组（RTF 图片数据） */
+function hexToBytes(hex: string): ArrayBuffer {
+  const len = Math.floor(hex.length / 2);
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  }
+  return bytes.buffer as ArrayBuffer;
+}
+
+/** 从 RTF 剪贴板数据中提取图片。
+ *  Word 复制图文混排时，图片二进制以 {\pict ...} 块的形式内嵌在 RTF 里，
+ *  而 HTML 里只有指向本地临时文件的 file:// 引用（浏览器读不到），
+ *  所以 RTF 是拿到图片的唯一可靠来源。 */
+function extractImagesFromRtf(rtf: string): File[] {
+  const files: File[] = [];
   let idx = 0;
   let blockCount = 0;
-  const MAX_BLOCKS = 20; // 保护：最多处理20个块
+  const MAX_BLOCKS = 30; // 保护：最多处理 30 个图片块
+
   while (idx < rtf.length && blockCount < MAX_BLOCKS) {
     const pictStart = rtf.indexOf("{\\pict", idx);
     if (pictStart < 0) break;
-    idx = pictStart + 1;
     blockCount++;
 
-    // 平衡括号找到块结束
+    // 平衡括号，找到图片块的闭合位置
     let depth = 0;
-    let end = pictStart;
+    let end = -1;
     for (let i = pictStart + 1; i < rtf.length; i++) {
       if (rtf[i] === "{") depth++;
       else if (rtf[i] === "}") {
-        if (depth === 0) { end = i; break; }
+        if (depth === 0) {
+          end = i;
+          break;
+        }
         depth--;
       }
     }
-    if (end <= pictStart) { debug?.(`Pict#${blockCount}: 未找到闭合括号`); continue; }
+    if (end < 0) break;
 
     const block = rtf.substring(pictStart, end + 1);
-    debug?.(`Pict#${blockCount}: pos=${pictStart} len=${block.length}`);
 
-    // 检测格式
-    let fmt = "pngblip";
-    if (/\\jpegblip/.test(block)) fmt = "jpegblip";
-    else if (/\\wmetafile\d+/.test(block)) fmt = "wmetafile";
-    else if (/\\emfblip/.test(block)) fmt = "emfblip";
-    debug?.(`Pict#${blockCount}: fmt=${fmt}`);
+    // 只处理浏览器能渲染的 PNG / JPEG；WMF / EMF 无法用 <img> 显示，跳过
+    let mime = "";
+    if (/\\pngblip/.test(block)) mime = "image/png";
+    else if (/\\jpegblip/.test(block)) mime = "image/jpeg";
 
-    // 提取 hex 数据
-    // 方法1: \picwgoalN\pichgoalN 之后
-    let hexMatch = block.match(/\\(?:picwgoal|pichgoal)\d+\s*([\da-fA-F\r\n\s]{50,})\}/);
-    // 方法2: 最后一个 } 之前的大量hex
-    if (!hexMatch) {
-      hexMatch = block.match(/([\da-fA-F\r\n\s]{200,})\}/);
-    }
-    if (!hexMatch) {
-      debug?.(`Pict#${blockCount}: hex未匹配`);
-      continue;
-    }
+    if (mime) {
+      // 去掉所有 RTF 控制字，剩下的连续十六进制字符就是图片数据
+      const hex = block
+        .replace(/\\[a-zA-Z]+-?\d*\s?/g, "") // 控制字，如 \picwgoal1024
+        .replace(/\\'[0-9a-fA-F]{2}/g, "") // 十六进制转义 \'xx
+        .replace(/\\[^a-zA-Z]/g, "") // 其它转义，如 \*
+        .replace(/[^0-9a-fA-F]/g, ""); // 只保留 hex
 
-    const hexData = hexMatch[1].replace(/[\r\n\s\\]/g, "");
-    debug?.(`Pict#${blockCount}: hex=${hexData.length}字符`);
-    if (hexData.length < 100) continue;
-
-    try {
-      // 快速 hex 解码：查找表替代 parseInt
-      const hexLookup = new Uint8Array(256);
-      for (let i = 0; i < 16; i++) {
-        const c = i.toString(16);
-        hexLookup[c.charCodeAt(0)] = i;
-        hexLookup[c.toUpperCase().charCodeAt(0)] = i;
+      // PNG 魔数 89504e47，JPEG 魔数 ffd8ff —— 校验确认提取完整
+      const isPng = hex.startsWith("89504e47");
+      const isJpeg = hex.startsWith("ffd8ff");
+      if (hex.length >= 130 && (isPng || isJpeg)) {
+        try {
+          const bytes = hexToBytes(hex);
+          const ext = isJpeg ? "jpg" : "png";
+          files.push(
+            new File([bytes], `paste-image-${files.length + 1}.${ext}`, {
+              type: mime,
+            })
+          );
+        } catch {
+          /* 图片损坏则跳过 */
+        }
       }
-      const len = hexData.length >> 1;
-      const bytes = new Uint8Array(len);
-      let bi = 0;
-      for (let i = 0; i + 1 < hexData.length; i += 2) {
-        const hi = hexLookup[hexData.charCodeAt(i)];
-        const lo = hexLookup[hexData.charCodeAt(i + 1)];
-        if (hi === undefined || lo === undefined) continue;
-        bytes[bi++] = (hi << 4) | lo;
-      }
-      // 如果有跳过的无效字符，裁剪数组
-      const finalBytes = bi === len ? bytes : bytes.slice(0, bi);
-      debug?.(`Pict#${blockCount}: 解码=${finalBytes.length}字节`);
-
-      let mimeType = "image/png";
-      let ext = "png";
-      if (fmt === "jpegblip") { mimeType = "image/jpeg"; ext = "jpg"; }
-      else if (fmt === "wmetafile") { mimeType = "image/wmf"; ext = "wmf"; }
-      else if (fmt === "emfblip") { mimeType = "image/emf"; ext = "emf"; }
-
-      files.push(new File([finalBytes], `rtf-img-${files.length + 1}.${ext}`, { type: mimeType }));
-    } catch (e: any) {
-      debug?.(`Pict#${blockCount}: 解码失败 ${e?.message || e}`);
     }
+
+    idx = end + 1;
   }
 
   return files;
 }
 
-/** 将 base64 data URI 转换为 Blob */
+/** 将 base64 data URI 转换为 Blob（网页复制图片时用） */
 function dataUriToBlob(dataUri: string): Blob {
   const [header, base64] = dataUri.split(",");
   const mime = header.match(/:(.*?);/)?.[1] || "image/png";
@@ -194,78 +259,94 @@ async function uploadImage(file: File): Promise<string> {
   return data.url;
 }
 
-/** 清理从 Word 粘贴的 HTML：去掉 mso-* 垃圾，保留格式和图片 */
-function cleanWordHtml(html: string): string {
-  return (
-    html
-      // 先提取 [if !vml] 块中的 <img> 和 <v:imagedata>，防止被后续清理误删
-      .replace(
-        /<!--\[if gte vml 1\]>([\s\S]*?)<v:imagedata[^>]+src\s*=\s*["']([^"']+)["'][^>]*\/?>[\s\S]*?<!\[endif\]-->/gi,
-        (_, _vmlContent: string, src: string) => `<img src="${src}" class="rounded-lg max-w-full my-4">`
-      )
-      .replace(
-        /<!--\[if \!vml\]-->[\s]*<img[^>]+src\s*=\s*["']([^"']+)["'][^>]*>[\s]*<!\[endif\]-->/gi,
-        '<img src="$1" class="rounded-lg max-w-full my-4">'
-      )
-      // 处理不在条件注释内的独立 VML imagedata
-      .replace(
-        /<v:imagedata[^>]+src\s*=\s*["']([^"']+)["'][^>]*\/?>/gi,
-        '<img src="$1" class="rounded-lg max-w-full my-4">'
-      )
-      .replace(
-        /<v:imagedata[^>]+src\s*=\s*["']([^"']+)["'][^>]*>[\s\S]*?<\/v:imagedata>/gi,
-        '<img src="$1" class="rounded-lg max-w-full my-4">'
-      )
-      // 去掉 Word 条件注释（此时图片已提取，可安全删除）
-      .replace(/<!--\[if [^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, "")
-      // 去掉残留的 VML / Office 形状标记
-      .replace(/<v:[^>]+>[\s\S]*?<\/v:[^>]+>/gi, "")
-      .replace(/<v:[^>]+\/>/gi, "")
-      .replace(/<o:[^>]+>[\s\S]*?<\/o:[^>]+>/gi, "")
-      // 去掉所有 mso-* CSS 属性（保留非 mso 的 style）
-      .replace(
-        /(style\s*=\s*")([^"]*)(")/gi,
-        (_m: string, p1: string, s: string, p3: string) => {
-          const cleaned = s
-            .replace(/[^;]*mso-[^;]*;?/gi, "")
-            .replace(/text-underline:\s*[^;]*;?/gi, "")
-            .replace(/\s*;\s*/g, ";")
-            .replace(/^;+|;+$/g, "");
-          return cleaned ? `${p1}${cleaned}${p3}` : "";
-        }
-      )
-      // 去掉 mso-* class
-      .replace(/class\s*=\s*"[^"]*Mso[^"]*"/gi, "")
-      .replace(/class\s*=\s*"[^"]*mso[^"]*"/gi, "")
-      // 去掉 Word XML 命名空间
-      .replace(/\s*xmlns:[a-z]+\s*=\s*"[^"]*"/gi, "")
-      // 去掉多余空格
-      .replace(/\s{2,}/g, " ")
+/** 把 HTML 里的所有图片占位符（VML / file:// / data: / 无 src）统一替换成
+ *  带序号的标记 <img src="__PIC_n__">，保证后续按文档顺序填入真实图片 URL。 */
+function replaceWordImagesWithPlaceholders(html: string): string {
+  let counter = 0;
+  const next = () => `<img src="__PIC_${counter++}__">`;
+
+  return html
+    // 1) VML 形状块（含嵌套 imagedata）整体替换
+    .replace(/<v:shape[^>]*>[\s\S]*?<\/v:shape>/gi, next)
+    // 2) 独立 imagedata
+    .replace(/<v:imagedata[^>]*\/?>[\s\S]*?<\/v:imagedata>/gi, next)
+    .replace(/<v:imagedata[^>]*\/?>/gi, next)
+    // 3) file:// 本地路径图片
+    .replace(/<img[^>]*src\s*=\s*["']file:\/\/[^"']*["'][^>]*>/gi, next)
+    // 4) data: 内联图片
+    .replace(/<img[^>]*src\s*=\s*["']data:image\/[^"']*["'][^>]*>/gi, next)
+    // 5) 无 src 的 img
+    .replace(/<img(?![^>]*\bsrc\s*=)[^>]*>/gi, next);
+}
+
+/** 把 __PIC_n__ 占位符按顺序替换为真实上传后的 URL；没有对应 URL 的占位符删除。 */
+function fillImagePlaceholders(html: string, urls: string[]): string {
+  let i = 0;
+  return html.replace(
+    /<img[^>]*src\s*=\s*["']__PIC_(\d+)__["'][^>]*>/g,
+    () => {
+      const url = urls[i++];
+      return url
+        ? `<img src="${url}" class="rounded-lg max-w-full my-4">`
+        : "";
+    }
   );
+}
+
+/** 清理 Word 粘贴产生的垃圾代码：去掉 mso-* 样式、VML 残留、命名空间、
+ *  Office 属性、空标签，但保留字号/颜色/字体等有用格式。 */
+function cleanWordHtml(html: string): string {
+  return html
+    // Word 条件注释
+    .replace(/<!--\[if [^\]]*\]>[\s\S]*?<!\[endif\]-->/gi, "")
+    // 残留 VML / Office 形状标签
+    .replace(/<v:[^>]+>[\s\S]*?<\/v:[^>]+>/gi, "")
+    .replace(/<v:[^>]+\/>/gi, "")
+    .replace(/<o:[^>]+>[\s\S]*?<\/o:[^>]+>/gi, "")
+    .replace(/<o:[^>]+\/>/gi, "")
+    // style 里去掉 mso-* / theme-* / text-underline，保留 font-size、color 等
+    .replace(/(style\s*=\s*")([^"]*)(")/gi, (_m, p1: string, s: string, p3: string) => {
+      const cleaned = s
+        .replace(/[^;]*mso-[^;]*;?/gi, "")
+        .replace(/[^;]*theme[^;]*;?/gi, "")
+        .replace(/text-underline:\s*[^;]*;?/gi, "")
+        .replace(/\s*;\s*/g, ";")
+        .replace(/^;+|;+$/g, "");
+      return cleaned ? `${p1}${cleaned}${p3}` : "";
+    })
+    // mso-* class
+    .replace(/class\s*=\s*"[^"]*Mso[^"]*"/gi, "")
+    .replace(/class\s*=\s*"[^"]*mso[^"]*"/gi, "")
+    // Word 命名空间与 Office/Word 属性
+    .replace(/\s*xmlns:[a-z]+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\s+[ow]:[a-z-]+\s*=\s*"[^"]*"/gi, "")
+    // 空 span 标签
+    .replace(/<span[^>]*>\s*<\/span>/gi, "")
+    // 多余空白
+    .replace(/\s{2,}/g, " ");
 }
 
 export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const [uploading, setUploading] = useState(false);
-  const [pasteDebug, setPasteDebug] = useState<string[]>([]);
-
-  const addDebug = (msg: string) => {
-    setPasteDebug((prev) => [...prev.slice(-19), msg]);
-    console.log("[PasteDebug]", msg);
-  };
+  const [openPicker, setOpenPicker] = useState<null | "color" | "highlight">(null);
+  const [openInsert, setOpenInsert] = useState(false);
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3] },
+        link: {
+          openOnClick: false,
+          HTMLAttributes: { class: "text-blue-500 underline" },
+        },
+        underline: {},
       }),
-      // 段落级样式保留（行高、缩进）
       ParagraphStyle,
-      // 文本样式 — 这些是保留 Word 格式的关键扩展
+      FontSize,
       TextStyle,
       Color,
       Highlight.configure({ multicolor: true }),
       FontFamily,
-      UnderlineExt,
       Table.configure({
         resizable: true,
       }),
@@ -275,100 +356,32 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
       ImageExtension.configure({
         HTMLAttributes: { class: "rounded-lg max-w-full my-4" },
       }),
-      LinkExtension.configure({
-        openOnClick: false,
-        HTMLAttributes: { class: "text-blue-500 underline" },
-      }),
     ],
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
     editorProps: {
-      // 在 ProseMirror 解析 HTML 之前，先清理 Word 格式
-      transformPastedHTML: (html: string) => {
-        return cleanWordHtml(html);
-      },
+      // 普通网页/文本粘贴走默认流程时，先清理 Word 格式
+      transformPastedHTML: (html: string) => cleanWordHtml(html),
       handlePaste: (view, event) => {
         const clipboardData = event.clipboardData;
         if (!clipboardData) return false;
 
-        const items = Array.from(clipboardData.items);
-        const rawHtml = clipboardData.getData("text/html");
+        const html = clipboardData.getData("text/html");
 
-        // 诊断信息
-        addDebug(`剪贴板: items=${items.length} files=${clipboardData.files?.length || 0} HTML=${rawHtml.length}字节`);
-        const itemTypes = items.map((i) => i.type).join(", ");
-        addDebug(`item types: ${itemTypes}`);
-        if (clipboardData.files?.length) {
-          const fNames = Array.from(clipboardData.files).map((f) => `${f.name}(${f.type})`).join(", ");
-          addDebug(`files: ${fNames}`);
-        }
-        const imgTagCount = (rawHtml.match(/<img[^>]*>/gi) || []).length;
-        const vmlCount = (rawHtml.match(/<v:imagedata/gi) || []).length;
-        addDebug(`HTML中: img=${imgTagCount} vml=${vmlCount}`);
-
-        // 保存 HTML 到服务器供分析
-        fetch("/api/admin/save-rtf", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rtf: rawHtml.substring(0, 500000), tag: "html" }),
-        }).catch(() => {});
-
-        const html = rawHtml;
-        // 收集剪贴板中的图片文件（items + files 两个来源都要查）
+        // 收集剪贴板里的图片文件（items + files 两个来源）
         const imageFiles: File[] = [];
-        for (const item of items) {
+        for (const item of Array.from(clipboardData.items)) {
           if (item.type.startsWith("image/")) {
             const file = item.getAsFile();
             if (file) imageFiles.push(file);
           }
         }
-        if (clipboardData.files && clipboardData.files.length > 0) {
-          for (const file of Array.from(clipboardData.files)) {
-            if (file.type.startsWith("image/")) {
-              imageFiles.push(file);
-            }
+        if (clipboardData.files?.length) {
+          for (const f of Array.from(clipboardData.files)) {
+            if (f.type.startsWith("image/")) imageFiles.push(f);
           }
-        }
-        // 若没有图片文件，尝试从 RTF 中提取（Word VML 方式粘贴）
-        if (imageFiles.length === 0) {
-          const rtf = clipboardData.getData("text/rtf");
-          if (rtf) {
-            // 诊断：显示 RTF 中图片相关片段
-            const pictIdx = rtf.indexOf("\\pict");
-            if (pictIdx >= 0) {
-              addDebug(`RTF含\\pict在${pictIdx}，片段: ${rtf.substring(pictIdx, Math.min(pictIdx + 300, rtf.length)).replace(/[\r\n]/g, " ")}`);
-            } else {
-              addDebug(`RTF无\\pict，大小${rtf.length}B，首200字: ${rtf.substring(0, 200).replace(/[\r\n]/g, " ")}`);
-            }
-            // 保存 RTF 到服务器供分析
-            fetch("/api/admin/save-rtf", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ rtf: rtf.substring(0, 500000) }),
-            }).catch(() => {});
-            // 尝试多种匹配
-            const rtfImages = extractImagesFromRtf(rtf, addDebug);
-            if (rtfImages.length > 0) {
-              // PNG 优先 → WMF 在后（浏览器无法渲染 WMF）
-              const pngs = rtfImages.filter((f) => f.type === "image/png");
-              const others = rtfImages.filter((f) => f.type !== "image/png");
-              imageFiles.push(...pngs, ...others);
-              addDebug(`RTF图片: ${rtfImages.length}张(PNG:${pngs.length}), 总数: ${imageFiles.length}张`);
-            }
-          }
-        }
-
-        addDebug(`图片文件: ${imageFiles.length}个`);
-
-        // 是否来自 Word
-        const isWordHtml = /mso-/i.test(html) || /<!--\[if gte/i.test(html) || /<v:imagedata/i.test(html);
-
-        // 构建文件名→File 的映射，用于匹配 Word 图片
-        const fileByName: Record<string, File> = {};
-        for (const f of imageFiles) {
-          fileByName[f.name.toLowerCase()] = f;
         }
 
         // 纯图片粘贴（无 HTML，只有图片文件）
@@ -380,109 +393,75 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
               try {
                 const url = await uploadImage(file);
                 editor?.chain().focus().setImage({ src: url }).run();
-              } catch { /* skip */ }
+              } catch {
+                /* 单张失败跳过 */
+              }
             }
             setUploading(false);
           })();
           return true;
         }
 
-        // 含 <img> 的粘贴，或 Word 拷贝 → 拦截处理
-        if (/<img[^>]*>/i.test(html) || isWordHtml) {
-          event.preventDefault();
-          setUploading(true);
-          (async () => {
-            try {
-              // 先用原始 HTML 统计 VML 占位符并上传（cleanWordHtml 会删掉 VML）
-              const rawImgTags = html.match(/<img[^>]*src\s*=\s*["'](?:data:image\/|file:\/\/|http)/gi) || [];
-              const vmlPlaceholders = html.match(/<v:imagedata[^>]*\/?>/gi) || [];
-              const totalPlaceholders = Math.max(rawImgTags.length, vmlPlaceholders.length);
-              addDebug(`占位符: img=${rawImgTags.length} vml=${vmlPlaceholders.length} 总=${totalPlaceholders}`);
+        // 图文混排（含 HTML）
+        if (html) {
+          // 剪贴板没有独立图片文件时，从 RTF 提取（Word 内嵌图片的唯一来源）
+          if (imageFiles.length === 0) {
+            const rtf = clipboardData.getData("text/rtf");
+            if (rtf) imageFiles.push(...extractImagesFromRtf(rtf));
+          }
 
-              const uploadedUrls: string[] = [];
+          // 网页粘贴的 data: 内联图片也转成文件统一上传
+          const dataTags = html.match(/<img[^>]*src\s*=\s*["'](data:image\/[^"']+)["']/gi) || [];
+          for (const tag of dataTags) {
+            const m = tag.match(/src\s*=\s*["'](data:image\/[^"']+)["']/i);
+            if (m) {
+              try {
+                const blob = dataUriToBlob(m[1]);
+                imageFiles.push(
+                  new File([blob], `pasted-${imageFiles.length}.png`, { type: blob.type })
+                );
+              } catch {
+                /* 无法解析则跳过 */
+              }
+            }
+          }
 
-              // 上传所有图片（RTF提取的或剪贴板的）
-              if (imageFiles.length > 0 && totalPlaceholders > 0) {
-                addDebug(`开始上传${imageFiles.length}张→${totalPlaceholders}个占位符`);
+          const hasImage =
+            /<img[^>]*>/i.test(html) || /<v:imagedata/i.test(html) || /<!--\[if/i.test(html);
+
+          // 含图片或来自 Word → 拦截处理
+          if (imageFiles.length > 0 || hasImage) {
+            event.preventDefault();
+            setUploading(true);
+            (async () => {
+              try {
+                // 上传所有图片，得到真实 URL
+                const urls: string[] = [];
                 for (const file of imageFiles) {
                   try {
                     const url = await uploadImage(file);
-                    if (url) uploadedUrls.push(url);
-                  } catch { /* skip */ }
-                }
-                addDebug(`上传: ${uploadedUrls.length}成功`);
-              }
-
-              // 如果没图片文件，检查 base64 img
-              if (uploadedUrls.length === 0 && rawImgTags.length > 0) {
-                for (const tag of rawImgTags) {
-                  const srcMatch = tag.match(/src\s*=\s*["']([^"']*)["']/i);
-                  const src = srcMatch ? srcMatch[1] : "";
-                  if (src.startsWith("data:image/")) {
-                    try {
-                      const blob = dataUriToBlob(src);
-                      const file = new File([blob], "img.png", { type: blob.type });
-                      const url = await uploadImage(file);
-                      if (url) uploadedUrls.push(url);
-                    } catch { /* skip */ }
+                    if (url) urls.push(url);
+                  } catch {
+                    /* 单张失败跳过 */
                   }
                 }
+
+                // 占位符化 → 清理垃圾 → 填回真实 URL
+                let processed = replaceWordImagesWithPlaceholders(html);
+                processed = cleanWordHtml(processed);
+                processed = fillImagePlaceholders(processed, urls);
+
+                editor?.commands.insertContent(processed);
+              } catch {
+                /* 整体失败时忽略，保留默认粘贴 */
               }
-
-              // ***** 替换所有 VML 块为 <img>，防止 cleanWordHtml 误删 *****
-              let processedHtml = html;
-              if (vmlPlaceholders.length > 0 && uploadedUrls.length > 0) {
-                let urlIdx = 0;
-                const replaceWithImg = () => {
-                  if (urlIdx < uploadedUrls.length) {
-                    return `<img src="${uploadedUrls[urlIdx++]}" class="rounded-lg max-w-full my-4">`;
-                  }
-                  return "";
-                };
-                // 1. <v:shape ...><v:imagedata .../></v:shape> → <img>
-                processedHtml = processedHtml.replace(
-                  /<v:shape[^>]*>[\s]*<v:imagedata[^>]*\/?>[\s]*<\/v:shape>/gi,
-                  replaceWithImg
-                );
-                // 2. <!--[if gte vml 1]-->...[if !supportInlineShapes]...<v:imagedata/>...<![endif]--> → <img>
-                processedHtml = processedHtml.replace(
-                  /<!--\[if[^\]]*vml[^\]]*\]>[\s\S]*?<v:imagedata[^>]*\/?>[\s\S]*?<!\[endif\]-->/gi,
-                  replaceWithImg
-                );
-                // 3. 独立的 <v:imagedata .../> → <img>
-                processedHtml = processedHtml.replace(
-                  /<v:imagedata[^>]*\/?>/gi,
-                  replaceWithImg
-                );
-                addDebug(`VML→IMG: ${urlIdx}个`);
-              }
-
-              // 现在清理 Word HTML
-              processedHtml = cleanWordHtml(processedHtml);
-
-              addDebug(`处理后img: ${(processedHtml.match(/<img[^>]*>/gi) || []).length}个`);
-
-              // 替换残留的 <img src="file:///"> 或 <img> 无 src 的标签
-              const brokenImgs = processedHtml.match(/<img(?![^>]*src="(?:https?:)?\/\/)[^>]*>/gi) || [];
-              if (brokenImgs.length > 0 && uploadedUrls.length > 0) {
-                let idx = 0;
-                processedHtml = processedHtml.replace(/<img(?![^>]*src="(?:https?:)?\/\/)[^>]*>/gi, () => {
-                  if (idx < uploadedUrls.length) {
-                    return `<img src="${uploadedUrls[idx++]}" class="rounded-lg max-w-full my-4">`;
-                  }
-                  return "";
-                });
-                addDebug(`修复残留img: ${idx}个`);
-              }
-
-              editor?.commands.insertContent(processedHtml);
-            } catch { /* ignore */ }
-            setUploading(false);
-          })();
-          return true;
+              setUploading(false);
+            })();
+            return true;
+          }
         }
 
-        // 网页粘贴 / 纯文本 → 默认处理
+        // 普通文本 / 网页粘贴 → 交给默认流程处理
         return false;
       },
       handleDrop: (view, event) => {
@@ -529,18 +508,63 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     [editor]
   );
 
-  const setColor = useCallback(() => {
-    const color = window.prompt("请输入颜色值（如 #ff0000 或 red）", "#333333");
-    if (color && editor) {
-      editor.chain().focus().setColor(color).run();
+  /** 首行缩进：段落开头空两格（中文排版常用） */
+  const toggleIndent = useCallback(() => {
+    if (!editor) return;
+    const attrs = editor.getAttributes("paragraph");
+    const current = (attrs.paraStyle || "") as string;
+    const parts = current
+      .split(";")
+      .filter((p: string) => p && !p.startsWith("text-indent:"));
+    if (!current.includes("text-indent:")) {
+      parts.push("text-indent:2em");
     }
+    editor.chain().focus().updateAttributes("paragraph", { paraStyle: parts.join(";") || null }).run();
   }, [editor]);
 
-  const setHighlight = useCallback(() => {
-    const color = window.prompt("请输入高亮颜色（如 #ffff00）", "#ffff00");
-    if (color && editor) {
-      editor.chain().focus().toggleHighlight({ color }).run();
-    }
+  /** 设置字号（合并保留其它文本样式，如颜色） */
+  const setFontSize = useCallback(
+    (fontSize: string) => {
+      if (!editor) return;
+      const current = editor.getAttributes("textStyle");
+      editor
+        .chain()
+        .focus()
+        .setMark("textStyle", { ...current, fontSize: fontSize || null })
+        .run();
+    },
+    [editor]
+  );
+
+  /** 清除格式：去掉选中文字的加粗/颜色/字号等，恢复默认（保留标题、列表结构） */
+  const clearFormatting = useCallback(() => {
+    editor?.chain().focus().unsetAllMarks().run();
+  }, [editor]);
+
+  const applyColor = useCallback(
+    (color: string) => {
+      editor?.chain().focus().setColor(color).run();
+      setOpenPicker(null);
+    },
+    [editor]
+  );
+
+  const unsetColor = useCallback(() => {
+    editor?.chain().focus().unsetColor().run();
+    setOpenPicker(null);
+  }, [editor]);
+
+  const applyHighlight = useCallback(
+    (color: string) => {
+      editor?.chain().focus().toggleHighlight({ color }).run();
+      setOpenPicker(null);
+    },
+    [editor]
+  );
+
+  const unsetHighlight = useCallback(() => {
+    editor?.chain().focus().unsetHighlight().run();
+    setOpenPicker(null);
   }, [editor]);
 
   const addImageByFile = useCallback(() => {
@@ -580,6 +604,27 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
     }
   }, [editor]);
 
+  /** 插入块级内容（标题/列表/引用/代码块/分割线/表格），插入后关闭菜单 */
+  const insertBlock = useCallback(
+    (type: InsertBlockType) => {
+      if (!editor) return;
+      const chain = editor.chain().focus();
+      switch (type) {
+        case "h1": chain.toggleHeading({ level: 1 }).run(); break;
+        case "h2": chain.toggleHeading({ level: 2 }).run(); break;
+        case "h3": chain.toggleHeading({ level: 3 }).run(); break;
+        case "bulletList": chain.toggleBulletList().run(); break;
+        case "orderedList": chain.toggleOrderedList().run(); break;
+        case "blockquote": chain.toggleBlockquote().run(); break;
+        case "codeBlock": chain.toggleCodeBlock().run(); break;
+        case "hr": chain.setHorizontalRule().run(); break;
+        case "table": chain.insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(); break;
+      }
+      setOpenInsert(false);
+    },
+    [editor]
+  );
+
   if (!editor) {
     return (
       <div className="flex h-48 items-center justify-center rounded-lg border border-gray-200 bg-gray-50">
@@ -595,154 +640,138 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
     }`;
 
+  const menuBtnClass = (active: boolean) =>
+    `rounded p-1.5 transition-colors ${
+      active
+        ? "bg-gray-100 text-[var(--accent)]"
+        : "text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+    }`;
+
+  const currentParaStyle = (editor.getAttributes("paragraph").paraStyle || "") as string;
+  const currentFontSize = (editor.getAttributes("textStyle").fontSize as string) || "";
+  const charCount = editor.getText().replace(/\s/g, "").length;
+
   return (
-    <div className="rounded-lg border border-gray-200 overflow-hidden">
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 bg-gray-50 px-3 py-2">
-        {/* 文本格式 */}
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={btnClass(editor.isActive("bold"))}
-          title="加粗"
+    <div className="relative rounded-xl border border-gray-200 bg-white shadow-sm">
+      {/* 顶部精简工具栏 */}
+      <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 bg-gray-50/80 px-3 py-2">
+        {/* 撤销/重做 */}
+        <button type="button" onClick={() => editor.chain().focus().undo().run()} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="撤销">
+          <Undo className="h-4 w-4" />
+        </button>
+        <button type="button" onClick={() => editor.chain().focus().redo().run()} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="重做">
+          <Redo className="h-4 w-4" />
+        </button>
+
+        <div className="mx-1 h-5 w-px bg-gray-300" />
+
+        {/* 字号 */}
+        <select
+          value={currentFontSize}
+          onChange={(e) => setFontSize(e.target.value)}
+          className="h-7 rounded border border-gray-200 bg-white px-1 text-xs text-gray-600 focus:outline-none"
+          title="字号"
         >
+          <option value="">字号</option>
+          {FONT_SIZES.map((size) => (
+            <option key={size} value={size}>
+              {parseInt(size)}
+            </option>
+          ))}
+        </select>
+
+        <div className="mx-1 h-5 w-px bg-gray-300" />
+
+        {/* 文本格式 */}
+        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={btnClass(editor.isActive("bold"))} title="加粗">
           <Bold className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={btnClass(editor.isActive("italic"))}
-          title="斜体"
-        >
+        <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={btnClass(editor.isActive("italic"))} title="斜体">
           <Italic className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={btnClass(editor.isActive("underline"))}
-          title="下划线"
-        >
+        <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={btnClass(editor.isActive("underline"))} title="下划线">
           <Underline className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={btnClass(editor.isActive("strike"))}
-          title="删除线"
-        >
+        <button type="button" onClick={() => editor.chain().focus().toggleStrike().run()} className={btnClass(editor.isActive("strike"))} title="删除线">
           <Strikethrough className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleCode().run()}
-          className={btnClass(editor.isActive("code"))}
-          title="行内代码"
-        >
+        <button type="button" onClick={() => editor.chain().focus().toggleCode().run()} className={btnClass(editor.isActive("code"))} title="行内代码">
           <Code className="h-4 w-4" />
         </button>
 
         <div className="mx-1 h-5 w-px bg-gray-300" />
 
-        {/* 文字颜色 & 高亮 */}
-        <button type="button" onClick={setColor} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="文字颜色">
-          <Palette className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={setHighlight}
-          className={btnClass(editor.isActive("highlight"))}
-          title="高亮"
-        >
-          <Highlighter className="h-4 w-4" />
-        </button>
+        {/* 文字颜色（色板） */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOpenPicker(openPicker === "color" ? null : "color")}
+            className={btnClass(editor.isActive("textStyle", { color: editor.getAttributes("textStyle").color }))}
+            title="文字颜色"
+          >
+            <Palette className="h-4 w-4" />
+          </button>
+          {openPicker === "color" && (
+            <div className="absolute left-0 top-full z-30 mt-1 w-[190px] rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
+              <div className="mb-1 flex items-center justify-between px-1">
+                <span className="text-xs text-gray-500">文字颜色</span>
+                <button type="button" onClick={unsetColor} className="rounded px-1.5 py-0.5 text-xs text-gray-400 hover:bg-gray-100">
+                  默认
+                </button>
+              </div>
+              <div className="grid grid-cols-6 gap-1">
+                {TEXT_COLORS.map((c) => (
+                  <button key={c} type="button" onClick={() => applyColor(c)} className="h-6 w-6 rounded border border-gray-100 hover:scale-110 transition-transform" style={{ backgroundColor: c }} title={c} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 高亮（色板） */}
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOpenPicker(openPicker === "highlight" ? null : "highlight")}
+            className={btnClass(editor.isActive("highlight"))}
+            title="背景高亮"
+          >
+            <Highlighter className="h-4 w-4" />
+          </button>
+          {openPicker === "highlight" && (
+            <div className="absolute left-0 top-full z-30 mt-1 w-[190px] rounded-lg border border-gray-200 bg-white p-2 shadow-lg">
+              <div className="mb-1 flex items-center justify-between px-1">
+                <span className="text-xs text-gray-500">背景高亮</span>
+                <button type="button" onClick={unsetHighlight} className="rounded px-1.5 py-0.5 text-xs text-gray-400 hover:bg-gray-100">
+                  默认
+                </button>
+              </div>
+              <div className="grid grid-cols-6 gap-1">
+                {HIGHLIGHT_COLORS.map((c) => (
+                  <button key={c} type="button" onClick={() => applyHighlight(c)} className="h-6 w-6 rounded border border-gray-100 hover:scale-110 transition-transform" style={{ backgroundColor: c }} title={c} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="mx-1 h-5 w-px bg-gray-300" />
 
-        {/* 对齐 */}
-        <button
-          type="button"
-          onClick={() => applyAlign("left")}
-          className={btnClass(
-            (editor.getAttributes("paragraph").paraStyle || "").includes("text-align:left") ||
-            !(editor.getAttributes("paragraph").paraStyle || "").includes("text-align:")
-          )}
-          title="左对齐"
-        >
+        {/* 对齐 & 缩进 */}
+        <button type="button" onClick={() => applyAlign("left")} className={btnClass(currentParaStyle.includes("text-align:left") || !currentParaStyle.includes("text-align:"))} title="左对齐">
           <AlignLeft className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => applyAlign("center")}
-          className={btnClass(
-            (editor.getAttributes("paragraph").paraStyle || "").includes("text-align:center")
-          )}
-          title="居中"
-        >
+        <button type="button" onClick={() => applyAlign("center")} className={btnClass(currentParaStyle.includes("text-align:center"))} title="居中">
           <AlignCenter className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => applyAlign("right")}
-          className={btnClass(
-            (editor.getAttributes("paragraph").paraStyle || "").includes("text-align:right")
-          )}
-          title="右对齐"
-        >
+        <button type="button" onClick={() => applyAlign("right")} className={btnClass(currentParaStyle.includes("text-align:right"))} title="右对齐">
           <AlignRight className="h-4 w-4" />
         </button>
-
-        <div className="mx-1 h-5 w-px bg-gray-300" />
-
-        {/* 标题 */}
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className={btnClass(editor.isActive("heading", { level: 1 }))}
-          title="一级标题"
-        >
-          <Heading1 className="h-4 w-4" />
+        <button type="button" onClick={() => applyAlign("justify")} className={btnClass(currentParaStyle.includes("text-align:justify"))} title="两端对齐">
+          <AlignJustify className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={btnClass(editor.isActive("heading", { level: 2 }))}
-          title="二级标题"
-        >
-          <Heading2 className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={btnClass(editor.isActive("heading", { level: 3 }))}
-          title="三级标题"
-        >
-          <Heading3 className="h-4 w-4" />
-        </button>
-
-        <div className="mx-1 h-5 w-px bg-gray-300" />
-
-        {/* 列表 */}
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={btnClass(editor.isActive("bulletList"))}
-          title="无序列表"
-        >
-          <List className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={btnClass(editor.isActive("orderedList"))}
-          title="有序列表"
-        >
-          <ListOrdered className="h-4 w-4" />
+        <button type="button" onClick={toggleIndent} className={btnClass(currentParaStyle.includes("text-indent:"))} title="首行缩进">
+          <IndentIncrease className="h-4 w-4" />
         </button>
 
         <div className="mx-1 h-5 w-px bg-gray-300" />
@@ -755,55 +784,98 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
           <LinkIcon className="h-4 w-4" />
         </button>
 
-        {uploading && (
-          <span className="ml-1 inline-flex items-center gap-1 text-xs text-[var(--accent)]">
-            <Upload className="h-3 w-3 animate-pulse" />
-            上传中...
-          </span>
-        )}
-
         <div className="mx-1 h-5 w-px bg-gray-300" />
 
-        {/* 撤销/重做 */}
-        <button type="button" onClick={() => editor.chain().focus().undo().run()} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="撤销">
-          <Undo className="h-4 w-4" />
-        </button>
-        <button type="button" onClick={() => editor.chain().focus().redo().run()} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="重做">
-          <Redo className="h-4 w-4" />
-        </button>
-
-        <div className="mx-1 h-5 w-px bg-gray-300" />
-
-        {/* 测试：加载 Word 测试内容 */}
-        <button
-          type="button"
-          onClick={async () => {
-            setUploading(true);
-            try {
-              const res = await fetch("/api/admin/test-content", { credentials: "include" });
-              const data = await res.json();
-              if (data.html && editor) {
-                editor.commands.setContent(data.html);
-              }
-            } catch { /* ignore */ }
-            setUploading(false);
-          }}
-          className="rounded px-2 py-1 text-xs text-orange-500 hover:bg-orange-50"
-          title="加载Word文档测试HTML"
-        >
-          加载测试
+        {/* 清除格式 */}
+        <button type="button" onClick={clearFormatting} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="清除格式">
+          <RemoveFormatting className="h-4 w-4" />
         </button>
       </div>
 
-      {/* Editor Area */}
-      <div className="prose prose-sm max-w-none p-4 min-h-[300px] focus:outline-none
-        /* 表格样式 */
+      {/* 选中文字 → 气泡工具栏 */}
+      <BubbleMenu
+        editor={editor}
+        shouldShow={({ editor }) =>
+          !editor.state.selection.empty && !editor.isActive("codeBlock")
+        }
+        options={{ placement: "top", offset: 8 }}
+      >
+        <div className="flex items-center gap-0.5 rounded-lg border border-gray-200 bg-white p-1 shadow-lg">
+          <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={menuBtnClass(editor.isActive("bold"))} title="加粗">
+            <Bold className="h-4 w-4" />
+          </button>
+          <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={menuBtnClass(editor.isActive("italic"))} title="斜体">
+            <Italic className="h-4 w-4" />
+          </button>
+          <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={menuBtnClass(editor.isActive("underline"))} title="下划线">
+            <Underline className="h-4 w-4" />
+          </button>
+          <button type="button" onClick={() => editor.chain().focus().toggleStrike().run()} className={menuBtnClass(editor.isActive("strike"))} title="删除线">
+            <Strikethrough className="h-4 w-4" />
+          </button>
+          <button type="button" onClick={() => editor.chain().focus().toggleCode().run()} className={menuBtnClass(editor.isActive("code"))} title="行内代码">
+            <Code className="h-4 w-4" />
+          </button>
+          <button type="button" onClick={addLink} className={menuBtnClass(editor.isActive("link"))} title="链接">
+            <LinkIcon className="h-4 w-4" />
+          </button>
+          <div className="mx-1 h-4 w-px bg-gray-200" />
+          <button type="button" onClick={clearFormatting} className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700" title="清除格式">
+            <RemoveFormatting className="h-4 w-4" />
+          </button>
+        </div>
+      </BubbleMenu>
+
+      {/* 空段落 → + 号插入菜单 */}
+      <FloatingMenu
+        editor={editor}
+        shouldShow={({ editor }) => {
+          if (editor.isActive("codeBlock")) return false;
+          const { $from } = editor.state.selection;
+          const node = $from.parent;
+          return node.type.name === "paragraph" && node.content.size === 0;
+        }}
+        options={{ placement: "left-start", offset: 6 }}
+      >
+        <div className="relative">
+          {openInsert ? (
+            <div className="w-56 overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-xl">
+              <div className="px-2 py-1 text-[11px] text-gray-400">标题</div>
+              <InsertItem icon={Heading1} label="一级标题" onClick={() => insertBlock("h1")} />
+              <InsertItem icon={Heading2} label="二级标题" onClick={() => insertBlock("h2")} />
+              <InsertItem icon={Heading3} label="三级标题" onClick={() => insertBlock("h3")} />
+              <div className="mx-2 my-1 border-t border-gray-100" />
+              <div className="px-2 py-1 text-[11px] text-gray-400">列表与内容</div>
+              <InsertItem icon={List} label="无序列表" onClick={() => insertBlock("bulletList")} />
+              <InsertItem icon={ListOrdered} label="有序列表" onClick={() => insertBlock("orderedList")} />
+              <InsertItem icon={Quote} label="引用" onClick={() => insertBlock("blockquote")} />
+              <InsertItem icon={Code2} label="代码块" onClick={() => insertBlock("codeBlock")} />
+              <InsertItem icon={Minus} label="分割线" onClick={() => insertBlock("hr")} />
+              <div className="mx-2 my-1 border-t border-gray-100" />
+              <InsertItem icon={ImageIcon} label="图片" onClick={addImageByFile} />
+              <InsertItem icon={Table2} label="表格（3×3）" onClick={() => insertBlock("table")} />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setOpenInsert(true)}
+              className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-500 shadow-sm hover:bg-gray-100 hover:text-gray-700"
+              title="插入内容"
+            >
+              <Plus className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+      </FloatingMenu>
+
+      {/* 编辑区（沉浸式居中） */}
+      <div className="prose prose-sm mx-auto w-full max-w-[760px] min-h-[320px] p-5 focus:outline-none
         [&_table]:w-full [&_table]:border-collapse [&_table]:my-4 [&_table]:text-sm
         [&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold
         [&_td]:border [&_td]:border-gray-300 [&_td]:px-3 [&_td]:py-2
         [&_tr:nth-child(even)_td]:bg-gray-50/50
         [&_.selectedCell]:bg-blue-50
-        /* 基础排版 */
         [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-4 [&_h1]:mb-2
         [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-4 [&_h2]:mb-2
         [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-3 [&_h3]:mb-1
@@ -815,23 +887,25 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
         [&_pre_code]:bg-transparent [&_pre_code]:p-0
         [&_img]:rounded-lg [&_img]:max-w-full
         [&_a]:text-blue-500 [&_a]:underline
-        /* Word 样式兼容 */
-        [&_.MsoNormal]:my-0
-        [&_span]:leading-relaxed
+        [&_hr]:border-t [&_hr]:border-gray-200 [&_hr]:my-6
       ">
         <EditorContent editor={editor} />
       </div>
 
-      {/* Paste Debug Panel */}
-      {pasteDebug.length > 0 && (
-        <div className="border-t border-gray-200 bg-gray-900 p-2 font-mono text-[10px] leading-relaxed text-green-400 max-h-40 overflow-y-auto">
-          {pasteDebug.map((line, i) => (
-            <div key={i}>
-              <span className="text-gray-500">{i + 1}.</span> {line}
-            </div>
-          ))}
-        </div>
-      )}
+      {/* 底部：字数统计 */}
+      <div className="flex items-center justify-between border-t border-gray-100 px-4 py-2 text-xs text-gray-400">
+        <span>段首「+」号可插入标题、列表、图片等</span>
+        <span className="inline-flex items-center gap-1">
+          {uploading ? (
+            <>
+              <Upload className="h-3 w-3 animate-pulse" />
+              上传中...
+            </>
+          ) : (
+            `约 ${charCount} 字`
+          )}
+        </span>
+      </div>
     </div>
   );
 }

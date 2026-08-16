@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save, Eye, ArrowLeft } from "lucide-react";
 import RichTextEditor from "@/components/admin/rich-text-editor";
@@ -38,6 +38,11 @@ export default function CaseForm({ initialData }: CaseFormProps) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [lastSavedAt, setLastSavedAt] = useState("");
+  // 已保存记录的 id（新建时为空，首次自动保存后填入，后续走 PATCH）
+  const savedIdRef = useRef<number | undefined>(initialData?.id);
+  const isFirstRender = useRef(true);
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [form, setForm] = useState<CaseFormData>({
     title: initialData?.title || "",
@@ -65,10 +70,10 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     const payload = { ...form, published: publishAfterSave ? true : form.published };
 
     try {
-      const url = initialData
-        ? `/api/admin/cases/${initialData.id}`
+      const url = savedIdRef.current
+        ? `/api/admin/cases/${savedIdRef.current}`
         : "/api/admin/cases";
-      const method = initialData ? "PATCH" : "POST";
+      const method = savedIdRef.current ? "PATCH" : "POST";
 
       const res = await fetch(url, {
         method,
@@ -89,6 +94,48 @@ export default function CaseForm({ initialData }: CaseFormProps) {
       setSaving(false);
     }
   };
+
+  // 自动保存草稿：内容变化 3 秒后无操作自动保存（新建时首次保存后记住 id）
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    // 标题和正文都非空时才自动保存，避免创建空记录
+    if (!form.title.trim() || !form.content.trim()) return;
+
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(async () => {
+      try {
+        const url = savedIdRef.current
+          ? `/api/admin/cases/${savedIdRef.current}`
+          : "/api/admin/cases";
+        const method = savedIdRef.current ? "PATCH" : "POST";
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ ...form, published: form.published }),
+        });
+        const data = await res.json();
+        if (res.ok && data.case?.id) {
+          savedIdRef.current = data.case.id;
+          setLastSavedAt(
+            new Date().toLocaleTimeString("zh-CN", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          );
+        }
+      } catch {
+        /* 自动保存失败静默处理，下次编辑再尝试 */
+      }
+    }, 3000);
+
+    return () => {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    };
+  }, [form]);
 
   const inputClass =
     "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[var(--text-dark)] transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]";
@@ -112,6 +159,9 @@ export default function CaseForm({ initialData }: CaseFormProps) {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {lastSavedAt && (
+            <span className="text-xs text-gray-400">已自动保存 {lastSavedAt}</span>
+          )}
           <button
             type="button"
             onClick={() => router.push("/admin/cases")}
@@ -158,14 +208,13 @@ export default function CaseForm({ initialData }: CaseFormProps) {
 
       {/* Form */}
       <div className="space-y-6">
-        {/* 标题 */}
+        {/* 标题（独立大号输入框，像知乎） */}
         <div>
-          <label className={labelClass}>案例标题 *</label>
           <input
             type="text"
             value={form.title}
             onChange={(e) => updateField("title", e.target.value)}
-            className={inputClass}
+            className="w-full border-none bg-transparent text-3xl font-bold text-[var(--text-dark)] placeholder:text-gray-300 focus:outline-none focus:ring-0"
             placeholder="输入案例标题"
           />
         </div>
