@@ -42,19 +42,61 @@ function getClientIP(request: NextRequest): string {
   return request.headers.get("x-real-ip") || "127.0.0.1";
 }
 
-// POST /api/track — 记录一次页面访问
+// 会话有效期：30 分钟。超过则视为一次新的来访。
+const SESSION_TTL_MS = 30 * 60 * 1000;
+
+// POST /api/track — 记录一次页面访问（同一会话 30 分钟内合并为一条）
 export async function POST(request: NextRequest) {
   try {
-    const { path, referer, duration } = await request.json().catch(() => ({}));
+    const { path, referer, duration, sessionId } = await request
+      .json()
+      .catch(() => ({}));
     const ip = getClientIP(request);
     const ua = request.headers.get("user-agent") || "";
+    const currentPath = path || "/";
 
+    // 若携带会话编号，尝试合并到最近一次仍在活跃期的来访记录
+    if (sessionId) {
+      const latest = await prisma.visitRecord.findFirst({
+        where: { sessionId },
+        orderBy: { updatedAt: "desc" },
+      });
+
+      if (latest && Date.now() - latest.updatedAt.getTime() <= SESSION_TTL_MS) {
+        // 活跃会话：追加访问页面，不新增记录
+        let pages: string[] = [];
+        try {
+          pages = latest.pages ? JSON.parse(latest.pages) : [];
+          if (!Array.isArray(pages)) pages = [];
+        } catch {
+          pages = [];
+        }
+        if (pages.length === 0 && latest.path) pages = [latest.path];
+        if (!pages.includes(currentPath)) pages.push(currentPath);
+
+        const updated = await prisma.visitRecord.update({
+          where: { id: latest.id },
+          data: {
+            lastPath: currentPath,
+            pages: JSON.stringify(pages),
+            pageCount: pages.length,
+          },
+        });
+
+        return NextResponse.json({ id: updated.id, isNew: false });
+      }
+    }
+
+    // 新会话：解析地理位置并创建一条来访记录
     const geo = await resolveGeo(ip);
-
     const record = await prisma.visitRecord.create({
       data: {
+        sessionId: sessionId || "",
         ip,
-        path: path || "/",
+        path: currentPath,
+        lastPath: currentPath,
+        pages: JSON.stringify([currentPath]),
+        pageCount: 1,
         referer: referer || null,
         userAgent: ua || null,
         country: geo.country,
@@ -64,7 +106,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ id: record.id }, { status: 201 });
+    return NextResponse.json({ id: record.id, isNew: true }, { status: 201 });
   } catch (err) {
     console.error("Track error:", err);
     return NextResponse.json({ error: "记录失败" }, { status: 500 });

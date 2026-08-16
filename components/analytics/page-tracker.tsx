@@ -4,6 +4,27 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 
 /**
+ * 获取或生成本次来访的会话编号（存于 localStorage，长期复用）。
+ * 后端根据该编号在 30 分钟内把多次页面浏览合并为同一条来访记录。
+ */
+function getSessionId(): string {
+  const KEY = "visits_session_id";
+  try {
+    let id = localStorage.getItem(KEY);
+    if (!id) {
+      id =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem(KEY, id);
+    }
+    return id;
+  } catch {
+    return "";
+  }
+}
+
+/**
  * 页面访问追踪组件。
  * 挂载到 layout 中，自动记录每次页面浏览的 IP、路径、来源和停留时长。
  */
@@ -22,6 +43,7 @@ export default function PageTracker() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            sessionId: getSessionId(),
             path: pathname,
             referer: document.referrer || null,
           }),

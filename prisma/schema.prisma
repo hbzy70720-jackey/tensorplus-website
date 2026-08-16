@@ -32,8 +32,12 @@ model NoteEntry {
 
 model VisitRecord {
   id        Int      @id @default(autoincrement())
+  sessionId String   @default("")
   ip        String
   path      String
+  lastPath  String?
+  pages     String?
+  pageCount Int      @default(1)
   referer   String?
   userAgent String?
   country   String?
@@ -41,6 +45,9 @@ model VisitRecord {
   city      String?
   duration  Int      @default(0)
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([sessionId, updatedAt])
 }
 
 model CaseStudy {

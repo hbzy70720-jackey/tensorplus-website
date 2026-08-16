@@ -5,8 +5,12 @@ import { Search, Trash2, Download, MapPin, Monitor, Clock } from "lucide-react";
 
 interface VisitRecord {
   id: number;
+  sessionId: string;
   ip: string;
   path: string;
+  lastPath: string | null;
+  pages: string | null;
+  pageCount: number;
   referer: string | null;
   userAgent: string | null;
   country: string | null;
@@ -56,6 +60,19 @@ function formatTime(iso: string): string {
     minute: "2-digit",
     second: "2-digit",
   });
+}
+
+// 解析一次来访访问过的页面轨迹
+function visitTrail(r: VisitRecord): string {
+  let pages: string[] = [];
+  try {
+    pages = r.pages ? JSON.parse(r.pages) : [];
+    if (!Array.isArray(pages)) pages = [];
+  } catch {
+    pages = [];
+  }
+  if (pages.length === 0) return r.path;
+  return pages.join(" → ");
 }
 
 export default function VisitsDashboard() {
@@ -136,7 +153,7 @@ export default function VisitsDashboard() {
   // 导出 CSV
   const handleExportCSV = () => {
     if (!data?.records.length) return;
-    const header = "IP,地区,页面,设备,浏览器,来源,停留时长,访问时间\n";
+    const header = "IP,地区,页面,页数,设备,浏览器,来源,停留时长,访问时间\n";
     const rows = data.records
       .map((r) => {
         const location = [r.country, r.province, r.city]
@@ -146,6 +163,7 @@ export default function VisitsDashboard() {
           r.ip,
           `"${location}"`,
           r.path,
+          r.pageCount,
           getDevice(r.userAgent),
           getBrowser(r.userAgent),
           `"${(r.referer || "").replace(/"/g, '""')}"`,
@@ -346,8 +364,13 @@ export default function VisitsDashboard() {
                     </span>
                   </td>
                   <td className="hidden px-4 py-3 text-sm text-[var(--text-muted)] sm:table-cell max-w-[240px]">
-                    <span className="block truncate" title={r.path}>
+                    <span className="block truncate" title={visitTrail(r)}>
                       {r.path}
+                      {r.pageCount > 1 && (
+                        <span className="ml-1 rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-500">
+                          +{r.pageCount - 1}页
+                        </span>
+                      )}
                     </span>
                   </td>
                   <td className="hidden px-4 py-3 text-sm text-[var(--text-muted)] lg:table-cell">
