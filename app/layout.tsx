@@ -17,10 +17,7 @@ const notoSansSC = Noto_Sans_SC({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "TensorPlus 张量无限 — 高精度3D感知与户外作业机器人",
-    template: "%s — TensorPlus 张量无限",
-  },
+  title: "北京张量无限科技有限公司",
   description:
     "北京张量无限科技有限公司，专注于户外机器人高精度3D感知方案与户外作业机器人。亚毫米级3D相机、物体识别算法、自主导航SLAM，为光伏、电力、林业、石油、农业提供开箱即用的智能解决方案。",
   keywords: [
