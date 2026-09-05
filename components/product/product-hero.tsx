@@ -3,7 +3,7 @@ import Container from "@/components/layout/container";
 interface ProductHeroProps {
   title: string;
   tagline: string;
-  description: string;
+  description: React.ReactNode;
   icon: React.ReactNode;
 }
 
@@ -14,7 +14,7 @@ export default function ProductHero({
   icon,
 }: ProductHeroProps) {
   return (
-    <section className="relative bg-[var(--bg-deep)] py-16">
+    <section className="relative bg-[var(--bg-deep)] pt-32 pb-20">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-cyan-900/10" />
       <Container className="relative z-10 text-center">
         <div className="mx-auto mb-6 inline-flex rounded-2xl bg-blue-500/10 p-4">

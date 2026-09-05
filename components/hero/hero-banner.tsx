@@ -13,7 +13,7 @@ export default function HeroBanner() {
 
       {/* Content */}
       <Container className="relative z-10 pb-20 pt-20 text-center">
-        <h1 className="mx-auto max-w-4xl font-[family-name:var(--font-heading)] text-5xl font-bold leading-tight tracking-tight sm:text-6xl md:text-7xl lg:text-8xl">
+        <h1 className="mx-auto max-w-4xl font-[family-name:var(--font-heading)] text-3xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-8xl">
           <span className="gradient-text whitespace-nowrap">户外视界&ensp;&ensp;精准无界</span>
         </h1>
 

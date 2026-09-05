@@ -3,6 +3,7 @@ import { FolderOpen } from "lucide-react";
 import Section from "@/components/layout/section";
 import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
+import ProductHero from "@/components/product/product-hero";
 import ProductCTA from "@/components/product/product-cta";
 import CaseList from "./case-list";
 
@@ -16,19 +17,12 @@ export default function CasesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[var(--bg-deep)] py-16">
-        <Container className="text-center">
-          <div className="mx-auto mb-6 inline-flex rounded-2xl bg-blue-500/10 p-4">
-            <FolderOpen className="h-10 w-10 text-[var(--accent-glow)]" />
-          </div>
-          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            客户<span className="gradient-text">案例</span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-gray-400">
-            从光伏到林业，从石油到电力 — 我们的解决方案已在多个行业头部客户落地验证。
-          </p>
-        </Container>
-      </section>
+      <ProductHero
+        title="客户案例"
+        tagline="聚焦行业真实痛点+深入客户作业一线"
+        description="从光伏到林业，从电力到石油——我们的解决方案已在多个行业头部客户落地验证，为客户的智能化作业创造可量化价值"
+        icon={<FolderOpen className="h-10 w-10 text-[var(--accent-glow)]" />}
+      />
 
       <Section variant="light">
         <Container>

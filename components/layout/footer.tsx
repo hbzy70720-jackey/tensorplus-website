@@ -122,8 +122,35 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-[var(--text-muted)]">
-          &copy; {new Date().getFullYear()} 北京张量无限科技有限公司. All
-          rights reserved.
+          <p>
+            &copy; {new Date().getFullYear()} 北京张量无限科技有限公司. All
+            rights reserved.
+          </p>
+          <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <a
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-[var(--text-light)]"
+            >
+              京ICP备18017788号-4
+            </a>
+            <a
+              href="https://beian.mps.gov.cn/#/query/webSearch?code=11010802050104"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 transition-colors hover:text-[var(--text-light)]"
+            >
+              <img
+                src="/images/gongan.png"
+                alt=""
+                width={18}
+                height={18}
+                className="inline-block"
+              />
+              京公网安备11010802050104号
+            </a>
+          </p>
         </div>
       </Container>
     </footer>

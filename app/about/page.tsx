@@ -3,6 +3,7 @@ import { Building2, MapPin } from "lucide-react";
 import Section from "@/components/layout/section";
 import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
+import ProductHero from "@/components/product/product-hero";
 import ProductCTA from "@/components/product/product-cta";
 
 export const metadata: Metadata = {
@@ -43,21 +44,18 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[var(--bg-deep)] py-16">
-        <Container className="text-center">
-          <div className="mx-auto mb-6 inline-flex rounded-2xl bg-blue-500/10 p-4">
-            <Building2 className="h-10 w-10 text-[var(--accent-glow)]" />
-          </div>
-          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            关于<span className="gradient-text">TensorPlus</span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-gray-400">
-            我们致力于让每一台户外机器人都能看懂世界，自主行走。
-            从3D感知到自主导航，TensorPlus
-            正在重新定义机器人与物理世界的交互方式。
-          </p>
-        </Container>
-      </section>
+      <ProductHero
+        title="关于张量无限"
+        tagline="清华创业团队+多年技术积累沉淀"
+        description={
+          <>
+            我们致力于让每一台户外机器人都能看懂世界，自主行走。从3D感知到自主导航，
+            <br />
+            张量无限正在重新定义机器人与物理世界的交互方式。
+          </>
+        }
+        icon={<Building2 className="h-10 w-10 text-[var(--accent-glow)]" />}
+      />
 
       {/* Mission */}
       <Section variant="light">

@@ -16,6 +16,11 @@ const navLinks = [
   { href: "/about", label: "关于我们" },
 ];
 
+// Logo 图片路径：直接用「完整 logo（图标 + TENSOR⁺ 文字）」图片。
+// dark 版用在黑底（首页），white 版用在白底（其他页 / 滚动后）。
+const LOGO_ON_DARK = "/images/logo-dark.png"; // 完整 logo · 首页黑底用
+const LOGO_ON_LIGHT = "/images/logo-white.png"; // 完整 logo · 其他页白底用
+
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,21 +43,18 @@ export default function Nav() {
       )}
     >
       <Container>
-        <div className="flex h-20 items-center justify-between">
-          {/* Logo */}
+        <div className="flex h-28 items-center justify-between">
+          {/* Logo：完整 logo 图片（图标 + TENSOR⁺ 文字） */}
           <Link
             href="/"
-            className={cn(
-              "font-[family-name:var(--font-heading)] text-xl font-bold tracking-tight transition-colors",
-              scrolled || !isDarkPage
-                ? "text-[var(--text-dark)]"
-                : "text-white"
-            )}
+            aria-label="TensorPlus 首页"
+            className="flex items-center"
           >
-            <span className="gradient-text">Tensor</span>
-            <span className={scrolled || !isDarkPage ? "" : "text-white"}>
-              Plus
-            </span>
+            <img
+              src={scrolled || !isDarkPage ? LOGO_ON_LIGHT : LOGO_ON_DARK}
+              alt="TensorPlus"
+              className="h-10 w-auto sm:h-12 lg:h-14"
+            />
           </Link>
 
           {/* Desktop Nav */}
