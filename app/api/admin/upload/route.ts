@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAuthCookieName, verifyToken } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import sharp from "sharp";
 
 async function authenticate(request: NextRequest): Promise<boolean> {
   const token = request.cookies.get(getAuthCookieName())?.value;
@@ -46,10 +47,27 @@ export async function POST(request: NextRequest) {
   }
 
   const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  let buffer = Buffer.from(bytes);
+  let ext = path.extname(file.name) || ".png";
+
+  // 压缩：栅格图统一转 WebP 并限制尺寸；sharp 无法处理的格式（如 Word 粘贴的 wmf/emf）原样保存
+  try {
+    const meta = await sharp(buffer, { failOn: "none" }).metadata();
+    const compressible = ["png", "jpeg", "webp", "bmp", "tiff", "avif"];
+    if (meta.format && compressible.includes(meta.format)) {
+      // @ts-ignore-next-line  sharp库类型定义bug ArrayBufferLike
+      buffer = (await sharp(buffer)
+        .rotate()
+        .resize({ width: 1600, height: 1600, fit: "inside", withoutEnlargement: true })
+        .webp({ quality: 82 })
+        .toBuffer()) as Buffer;
+      ext = ".webp";
+    }
+  } catch {
+    // sharp 识别失败时保留原图，不阻断上传
+  }
 
   // 生成唯一文件名
-  const ext = path.extname(file.name) || ".png";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
 
   // 图片存到 public 之外的 uploads 目录。若放在 public 里，

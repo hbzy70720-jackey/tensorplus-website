@@ -20,7 +20,7 @@ export default function CasesPage() {
       <ProductHero
         title="客户案例"
         tagline="聚焦行业真实痛点+深入客户作业一线"
-        description="从光伏到林业，从电力到石油——我们的解决方案已在多个行业头部客户落地验证，为客户的智能化作业创造可量化价值"
+        description="从光伏到林业，从电力到石油——我们的解决方案已在多个行业头部客户落地验证，为客户的智能化作业创造可量化价值。"
         icon={<FolderOpen className="h-10 w-10 text-[var(--accent-glow)]" />}
       />
 

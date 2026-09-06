@@ -3,6 +3,7 @@ import { MessageCircle } from "lucide-react";
 import Section from "@/components/layout/section";
 import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
+import ProductHero from "@/components/product/product-hero";
 import ContactForm from "@/components/contact/contact-form";
 import ContactInfo from "@/components/contact/contact-info";
 
@@ -16,19 +17,12 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[var(--bg-deep)] py-16">
-        <Container className="text-center">
-          <div className="mx-auto mb-6 inline-flex rounded-2xl bg-blue-500/10 p-4">
-            <MessageCircle className="h-10 w-10 text-[var(--accent-glow)]" />
-          </div>
-          <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            预约<span className="gradient-text">演示</span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-gray-400">
-            填写下方表单，我们的技术专家会在24小时内与您联系，为您安排一对一产品演示。
-          </p>
-        </Container>
-      </section>
+      <ProductHero
+        title="预约演示"
+        tagline="一对一技术演示，24小时快速响应"
+        description="填写下方表单，我们的技术专家将会在24小时内与您联系，为您安排产品介绍以及一对一现场产品演示。"
+        icon={<MessageCircle className="h-10 w-10 text-[var(--accent-glow)]" />}
+      />
 
       <Section variant="light">
         <Container>

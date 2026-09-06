@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 const milestones = [
   {
-    year: "2020",
+    year: "2018",
     title: "公司成立",
     desc: "北京张量无限科技有限公司在北京中关村智造大街成立，核心团队来自清华大学计算机系。",
   },

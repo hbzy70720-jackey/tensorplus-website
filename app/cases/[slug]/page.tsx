@@ -55,8 +55,9 @@ export default async function CaseDetailPage({ params }: PageProps) {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[var(--bg-deep)] py-16">
-        <Container>
+      <section className="relative bg-[var(--bg-deep)] pt-32 pb-20">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-cyan-900/10" />
+        <Container className="relative z-10">
           <Link
             href="/cases"
             className="mb-6 inline-flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
@@ -67,15 +68,15 @@ export default async function CaseDetailPage({ params }: PageProps) {
 
           <div className="mx-auto max-w-3xl text-center">
             {/* Badges */}
-            <div className="mb-4 flex flex-wrap items-center justify-center gap-2">
+            <div className="mb-8 flex flex-wrap items-center justify-center gap-2.5">
               {caseStudy.industry && (
-                <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${industryColors[caseStudy.industry] || "bg-gray-50 text-gray-600"}`}>
+                <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${industryColors[caseStudy.industry] || "bg-gray-50 text-gray-600"}`}>
                   {caseStudy.industry}
                 </span>
               )}
               {tagList.map((tag) => (
-                <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs text-gray-300">
-                  <Tag className="h-3 w-3" />
+                <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-sm text-gray-300">
+                  <Tag className="h-3.5 w-3.5" />
                   {tag}
                 </span>
               ))}
@@ -85,16 +86,16 @@ export default async function CaseDetailPage({ params }: PageProps) {
               {caseStudy.title}
             </h1>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-base text-gray-400">
               {caseStudy.customer && (
                 <span className="inline-flex items-center gap-1.5">
-                  <Building2 className="h-4 w-4 text-[var(--accent-glow)]" />
+                  <Building2 className="h-5 w-5 text-[var(--accent-glow)]" />
                   {caseStudy.customer}
                 </span>
               )}
               {caseStudy.deliveryDate && (
                 <span className="inline-flex items-center gap-1.5">
-                  <Calendar className="h-4 w-4 text-[var(--accent-glow)]" />
+                  <Calendar className="h-5 w-5 text-[var(--accent-glow)]" />
                   {caseStudy.deliveryDate}
                 </span>
               )}
