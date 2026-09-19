@@ -31,6 +31,10 @@ export const metadata: Metadata = {
     "视觉识别",
     "张量无限",
   ],
+  // 👇新增百度站长验证
+  other: {
+    "baidu-site-verification": "codeva‑0pTuH7CjnV",
+  },
   openGraph: {
     title: "TensorPlus 张量无限 — 高精度3D感知与户外作业机器人",
     description: "亚毫米级3D相机 + 户外作业机器人，为工业场景而生。",
