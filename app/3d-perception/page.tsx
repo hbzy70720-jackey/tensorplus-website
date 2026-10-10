@@ -35,7 +35,7 @@ const features = [
     title: "全天候户外适配",
     description:
       "专为户外复杂光照环境设计，强阳光、阴影、逆光条件下均能稳定运行。已通过光伏电站、林场、油田等户外场景长期验证。",
-    highlight: "IP67 防护等级",
+    highlight: "IP65 防护等级",
   },
 ];
 
@@ -46,7 +46,7 @@ const products = [
     imagePlaceholder: "tensor-plus",
     specs: [
       { param: "尺寸", value: "275×125×81.5mm" },
-      { param: "重量", value: "2kg" },
+      { param: "重量", value: "2.1kg" },
       { param: "供电", value: "12V DC" },
       { param: "峰值功率", value: "30W" },
       { param: "通信", value: "千兆以太网" },
@@ -69,7 +69,7 @@ const products = [
     imagePlaceholder: "tensor-eye",
     specs: [
       { param: "尺寸", value: "246×143×81mm" },
-      { param: "重量", value: "1kg" },
+      { param: "重量", value: "2.1kg" },
       { param: "供电", value: "12V DC" },
       { param: "峰值功率", value: "15W" },
       { param: "通信", value: "千兆以太网" },
@@ -92,7 +92,7 @@ const products = [
     imagePlaceholder: "tensor-mini",
     specs: [
       { param: "尺寸", value: "126×147×81mm" },
-      { param: "重量", value: "0.6kg" },
+      { param: "重量", value: "1.1kg" },
       { param: "供电", value: "12V DC" },
       { param: "功率", value: "15W" },
       { param: "通信", value: "千兆以太网" },
