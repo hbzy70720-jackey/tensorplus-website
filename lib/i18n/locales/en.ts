@@ -4,7 +4,7 @@ export const en: Dict = {
   nav: {
     home: "Home",
     perception: "3D Perception",
-    robot: "Outdoor Operation Robots",
+    robot: "Field Robots",
     cases: "Customer Stories",
     about: "About Us",
     bookDemo: "Book a Demo",
@@ -12,7 +12,7 @@ export const en: Dict = {
   },
   footer: {
     brandDesc:
-      "Beijing TensorPlus Technology Co., Ltd. — high-precision 3D perception and outdoor operation robot solutions.",
+      "Beijing TensorPlus Technology Co., Ltd. — high-precision 3D perception and field robot solutions.",
     quickLinks: "Quick Links",
     contact: "Contact",
     business: "Business",
@@ -23,16 +23,16 @@ export const en: Dict = {
   },
   hero: {
     tagline: "Enabling machines to understand and work in the real world",
-    subtitle1: "High-precision 3D perception + outdoor operation robots",
+    subtitle1: "High-precision 3D perception + field robots",
     subtitle2:
       "Turnkey intelligent solutions for forestry, solar, power, oil & gas, and agriculture",
     viewSolutions: "View Solutions",
     bookDemo: "Book a Demo →",
   },
   home: {
-    metaTitle: "Beijing TensorPlus Technology Co., Ltd. — High-Precision 3D Perception & Outdoor Robots",
+    metaTitle: "Beijing TensorPlus Technology Co., Ltd. — High-Precision 3D Perception & Field Robots",
     metaDescription:
-      "Beijing TensorPlus Technology Co., Ltd. specializes in high-precision 3D perception and outdoor operation robots. Sub-millimeter 3D cameras, object recognition, and autonomous SLAM navigation deliver turnkey solutions for solar, power, forestry, oil & gas, and agriculture.",
+      "Beijing TensorPlus Technology Co., Ltd. specializes in high-precision 3D perception and field robots. Sub-millimeter 3D cameras, object recognition, and autonomous SLAM navigation deliver turnkey solutions for solar, power, forestry, oil & gas, and agriculture.",
     productsTitle: "Core Solutions",
     productsSubtitle:
       "Two core product lines covering the full loop from perception to execution",
@@ -48,7 +48,7 @@ export const en: Dict = {
     card1Title: "High-Precision 3D Perception",
     card1Desc:
       "Industry-leading outdoor 3D cameras and object-recognition algorithms deliver sub-millimeter accuracy and strong resistance to light and shadow, with proven deployments across solar, forestry, power, and more.",
-    card2Title: "Outdoor Operation Robots",
+    card2Title: "Field Robots",
     card2Desc:
       "Autonomous navigation (SLAM + path planning + obstacle avoidance) plus autonomous execution enables fully automatic travel and precise operation over complex outdoor terrain.",
     learnMore: "Learn More",
@@ -204,10 +204,10 @@ export const en: Dict = {
     ],
   },
   robot: {
-    metaTitle: "Outdoor Operation Robots",
+    metaTitle: "Field Robots",
     metaDescription:
-      "Outdoor operation robots with autonomous navigation (SLAM + path planning + obstacle avoidance) and autonomous execution, reliably performing complex tasks for agriculture, forestry, oil & gas, and power.",
-    heroTitle: "Outdoor Operation Robots",
+      "Field robots with autonomous navigation (SLAM + path planning + obstacle avoidance) and autonomous execution, reliably performing complex tasks for agriculture, forestry, oil & gas, and power.",
+    heroTitle: "Field Robots",
     heroTagline: "3D perception + autonomous navigation + autonomous execution",
     heroDescription:
       "Fully autonomous outdoor robots that fuse sub-millimeter 3D perception, all-terrain autonomous navigation, and high-precision execution into one closed loop from perception to action.",
@@ -301,7 +301,7 @@ export const en: Dict = {
   about: {
     metaTitle: "About Us",
     metaDescription:
-      "Beijing TensorPlus Technology Co., Ltd. — high-precision 3D perception and outdoor operation robot solutions.",
+      "Beijing TensorPlus Technology Co., Ltd. — high-precision 3D perception and field robot solutions.",
     heroTitle: "About Us",
     heroTagline: "A Tsinghua-founded team with years of deep technical expertise",
     heroDesc1: "We help every outdoor robot see the world and move on its own. From 3D perception to autonomous navigation, ",
@@ -341,14 +341,14 @@ export const en: Dict = {
       {
         year: "2026",
         title: "Outdoor operation robot launched",
-        desc: "Launched our outdoor operation robot, combining autonomous navigation and 3D perception, successfully applied in agriculture, forestry, and more.",
+        desc: "Launched our field robot, combining autonomous navigation and 3D perception, successfully applied in agriculture, forestry, and more.",
       },
     ],
   },
   contact: {
     metaTitle: "Book a Demo",
     metaDescription:
-      "Book a TensorPlus product demo — one-on-one technical demos for our 3D perception solutions and outdoor operation robots.",
+      "Book a TensorPlus product demo — one-on-one technical demos for our 3D perception solutions and field robots.",
     heroTitle: "Book a Demo",
     heroTagline: "One-on-one technical demo, 24-hour response",
     heroDescription: "Fill in the form below and our technical experts will contact you within 24 hours to arrange a product introduction and a one-on-one on-site demo.",
@@ -364,8 +364,8 @@ export const en: Dict = {
     wechatOaAlt: "TensorPlus WeChat Official Account QR code",
     wechatVideoAlt: "TensorPlus WeChat Channels QR code",
     copyEmail: "Click to copy email",
-    zhangName: "Mr. Zhang:",
-    yangName: "Mr. Yang:",
+    zhangName: "Mr. Zhang: ",
+    yangName: "Mr. Yang: ",
     addressLine1: "No. 45 Chengfu Road, Haidian District, Beijing",
     addressLine2: "Room 206, 2F, Building G, Zhongguancun Intelligent Manufacturing Street",
   },
