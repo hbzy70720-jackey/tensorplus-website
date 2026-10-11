@@ -1,5 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Calendar, Building2 } from "lucide-react";
+import { useLocale } from "@/lib/i18n";
+import { industryLabel, industryColor } from "@/lib/industry";
+import { localizedHref } from "@/lib/locale-link";
 
 interface CaseCardProps {
   title: string;
@@ -12,13 +17,6 @@ interface CaseCardProps {
   tags: string;
 }
 
-const industryColors: Record<string, string> = {
-  "光伏": "bg-yellow-50 text-yellow-700",
-  "林业": "bg-green-50 text-green-700",
-  "石油": "bg-orange-50 text-orange-700",
-  "电力": "bg-blue-50 text-blue-700",
-};
-
 export default function CaseCard({
   title,
   slug,
@@ -29,6 +27,8 @@ export default function CaseCard({
   deliveryDate,
   tags,
 }: CaseCardProps) {
+  const lang = useLocale();
+
   const tagList: string[] = (() => {
     try {
       return JSON.parse(tags);
@@ -39,7 +39,7 @@ export default function CaseCard({
 
   return (
     <Link
-      href={`/cases/${slug}`}
+      href={localizedHref(`/cases/${slug}`, lang)}
       className="group block rounded-2xl border border-gray-100 bg-white shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg overflow-hidden"
     >
       {/* Cover Image */}
@@ -64,8 +64,8 @@ export default function CaseCard({
         {/* Industry + Tags */}
         <div className="mb-3 flex flex-wrap items-center gap-2">
           {industry && (
-            <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${industryColors[industry] || "bg-gray-50 text-gray-600"}`}>
-              {industry}
+            <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${industryColor(industry)}`}>
+              {industryLabel(industry, lang)}
             </span>
           )}
           {tagList.slice(0, 2).map((tag) => (

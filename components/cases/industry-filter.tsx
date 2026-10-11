@@ -1,19 +1,21 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-
-const industries = [
-  { value: "", label: "全部" },
-  { value: "光伏", label: "光伏" },
-  { value: "林业", label: "林业" },
-  { value: "石油", label: "石油" },
-  { value: "电力", label: "电力" },
-];
+import { useDict, useLocale } from "@/lib/i18n";
+import { INDUSTRY_OPTIONS, industryLabel } from "@/lib/industry";
+import { localizedHref } from "@/lib/locale-link";
 
 export default function IndustryFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const current = searchParams.get("industry") || "";
+  const t = useDict();
+  const lang = useLocale();
+
+  const industries = [
+    { value: "", label: t.cases.all },
+    ...INDUSTRY_OPTIONS.map((v) => ({ value: v, label: industryLabel(v, lang) })),
+  ];
 
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -22,7 +24,7 @@ export default function IndustryFilter() {
     } else {
       params.delete("industry");
     }
-    router.push(`/cases?${params.toString()}`);
+    router.push(localizedHref(`/cases?${params.toString()}`, lang));
   };
 
   return (

@@ -277,6 +277,15 @@ export const en: Dict = {
     imageIndex: (n: number) => `Image ${n}`,
     noImage: "No image",
   },
+  cases: {
+    all: "All",
+    loading: "Loading...",
+    emptyTitle: "Under Construction",
+    emptyDesc: "Exciting case studies are coming soon — stay tuned.",
+    prevPage: "Previous",
+    nextPage: "Next",
+    backToList: "Back to Cases",
+  },
   about: {
     heroTitle: "About Us",
     heroTagline: "A Tsinghua-founded team with years of deep technical expertise",

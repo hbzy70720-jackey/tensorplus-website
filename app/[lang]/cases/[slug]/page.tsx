@@ -6,47 +6,62 @@ import Section from "@/components/layout/section";
 import ProductCTA from "@/components/product/product-cta";
 import { Calendar, Building2, Tag, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { getDictionary } from "@/lib/i18n/dictionaries";
+import type { Locale } from "@/lib/i18n/config";
+import { industryLabel, industryColor } from "@/lib/industry";
+import { localizedHref } from "@/lib/locale-link";
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: Locale; slug: string }>;
 }
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  const isEn = lang === "en";
   const caseStudy = await prisma.caseStudy.findUnique({
     where: { slug, published: true },
   });
 
   if (!caseStudy) {
-    return { title: "案例不存在" };
+    return { title: isEn ? "Case not found" : "案例不存在" };
   }
 
+  const title = isEn ? caseStudy.titleEn || caseStudy.title : caseStudy.title;
+  const description = isEn
+    ? caseStudy.descriptionEn || caseStudy.description
+    : caseStudy.description;
+
   return {
-    title: caseStudy.title,
-    description: caseStudy.description || `客户案例：${caseStudy.title}`,
+    title,
+    description: description || (isEn ? `Customer story: ${title}` : `客户案例：${title}`),
   };
 }
 
-const industryColors: Record<string, string> = {
-  "光伏": "bg-yellow-50 text-yellow-700",
-  "林业": "bg-green-50 text-green-700",
-  "石油": "bg-orange-50 text-orange-700",
-  "电力": "bg-blue-50 text-blue-700",
-};
-
 export default async function CaseDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  const isEn = lang === "en";
+  const t = getDictionary(lang);
   const caseStudy = await prisma.caseStudy.findUnique({
     where: { slug, published: true },
   });
 
   if (!caseStudy) notFound();
 
+  // 按 lang 取值，英文字段为空时回退中文
+  const title = isEn ? caseStudy.titleEn || caseStudy.title : caseStudy.title;
+  const customer = isEn ? caseStudy.customerEn || caseStudy.customer : caseStudy.customer;
+  const content = isEn ? caseStudy.contentEn || caseStudy.content : caseStudy.content;
+  const tagsRaw = isEn
+    ? caseStudy.tagsEn && caseStudy.tagsEn !== "[]"
+      ? caseStudy.tagsEn
+      : caseStudy.tags
+    : caseStudy.tags;
+
   const tagList: string[] = (() => {
     try {
-      return JSON.parse(caseStudy.tags);
+      return JSON.parse(tagsRaw);
     } catch {
       return [];
     }
@@ -59,19 +74,19 @@ export default async function CaseDetailPage({ params }: PageProps) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-cyan-900/10" />
         <Container className="relative z-10">
           <Link
-            href="/cases"
+            href={localizedHref("/cases", lang)}
             className="mb-6 inline-flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
           >
             <ArrowLeft className="h-4 w-4" />
-            返回案例列表
+            {t.cases.backToList}
           </Link>
 
           <div className="mx-auto max-w-3xl text-center">
             {/* Badges */}
             <div className="mb-8 flex flex-wrap items-center justify-center gap-2.5">
               {caseStudy.industry && (
-                <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${industryColors[caseStudy.industry] || "bg-gray-50 text-gray-600"}`}>
-                  {caseStudy.industry}
+                <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${industryColor(caseStudy.industry)}`}>
+                  {industryLabel(caseStudy.industry, lang)}
                 </span>
               )}
               {tagList.map((tag) => (
@@ -83,14 +98,14 @@ export default async function CaseDetailPage({ params }: PageProps) {
             </div>
 
             <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              {caseStudy.title}
+              {title}
             </h1>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-base text-gray-400">
-              {caseStudy.customer && (
+              {customer && (
                 <span className="inline-flex items-center gap-1.5">
                   <Building2 className="h-5 w-5 text-[var(--accent-glow)]" />
-                  {caseStudy.customer}
+                  {customer}
                 </span>
               )}
               {caseStudy.deliveryDate && (
@@ -112,7 +127,7 @@ export default async function CaseDetailPage({ params }: PageProps) {
             {caseStudy.coverImage && (
               <img
                 src={caseStudy.coverImage}
-                alt={caseStudy.title}
+                alt={title}
                 className="mb-10 w-full rounded-2xl object-cover shadow-lg"
               />
             )}
@@ -140,7 +155,7 @@ export default async function CaseDetailPage({ params }: PageProps) {
                 [&_td]:border [&_td]:border-gray-300 [&_td]:px-4 [&_td]:py-2
                 [&_tr:nth-child(even)_td]:bg-gray-50/50
               "
-              dangerouslySetInnerHTML={{ __html: caseStudy.content }}
+              dangerouslySetInnerHTML={{ __html: content }}
             />
           </article>
         </Container>

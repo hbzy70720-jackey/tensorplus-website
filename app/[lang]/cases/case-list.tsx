@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import CaseCard from "@/components/cases/case-card";
 import IndustryFilter from "@/components/cases/industry-filter";
 import { Suspense } from "react";
+import { useDict, useLocale } from "@/lib/i18n";
 
 interface CaseItem {
   id: number;
@@ -24,6 +25,8 @@ const PAGE_SIZE = 9;
 function CaseListInner() {
   const searchParams = useSearchParams();
   const industry = searchParams.get("industry") || "";
+  const t = useDict();
+  const lang = useLocale();
 
   const [cases, setCases] = useState<CaseItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +39,7 @@ function CaseListInner() {
     try {
       const params = new URLSearchParams();
       if (industry) params.set("industry", industry);
+      params.set("lang", lang);
       params.set("page", String(page));
       params.set("pageSize", String(PAGE_SIZE));
 
@@ -51,7 +55,7 @@ function CaseListInner() {
     } finally {
       setLoading(false);
     }
-  }, [industry, page]);
+  }, [industry, lang, page]);
 
   useEffect(() => {
     fetchCases();
@@ -73,7 +77,7 @@ function CaseListInner() {
       {loading && (
         <div className="py-16 text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-[var(--accent)]" />
-          <p className="mt-4 text-sm text-[var(--text-muted)]">加载中...</p>
+          <p className="mt-4 text-sm text-[var(--text-muted)]">{t.cases.loading}</p>
         </div>
       )}
 
@@ -85,8 +89,8 @@ function CaseListInner() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
             </svg>
           </div>
-          <p className="text-lg font-semibold text-[var(--text-muted)]">版块升级中</p>
-          <p className="mt-2 text-sm text-gray-400">精彩案例即将上线，敬请期待</p>
+          <p className="text-lg font-semibold text-[var(--text-muted)]">{t.cases.emptyTitle}</p>
+          <p className="mt-2 text-sm text-gray-400">{t.cases.emptyDesc}</p>
         </div>
       )}
 
@@ -108,7 +112,7 @@ function CaseListInner() {
                 className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-[var(--text-dark)] transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" />
-                上一页
+                {t.cases.prevPage}
               </button>
 
               <div className="flex items-center gap-1">
@@ -132,7 +136,7 @@ function CaseListInner() {
                 disabled={page >= totalPages}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-[var(--text-dark)] transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-30"
               >
-                下一页
+                {t.cases.nextPage}
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>

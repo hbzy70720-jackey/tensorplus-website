@@ -238,6 +238,15 @@ export const zh = {
     imageIndex: (n: number) => `第 ${n} 张图片`,
     noImage: "暂无图片",
   },
+  cases: {
+    all: "全部",
+    loading: "加载中...",
+    emptyTitle: "版块升级中",
+    emptyDesc: "精彩案例即将上线，敬请期待",
+    prevPage: "上一页",
+    nextPage: "下一页",
+    backToList: "返回案例列表",
+  },
   about: {
     heroTitle: "关于张量无限",
     heroTagline: "清华创业团队+多年技术积累沉淀",
