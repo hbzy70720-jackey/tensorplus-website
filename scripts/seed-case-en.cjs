@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 // 为已发布案例写入英文版字段（titleEn/descriptionEn/contentEn/customerEn/industryEn/tagsEn）。
 // 用法：node scripts/seed-case-en.cjs（可重复执行，按 id 覆盖）。
 // 数据库由 DATABASE_URL 决定；默认使用 .env 里的 SQLite（file:./prisma/dev.db，相对 prisma/schema.prisma 解析）。
