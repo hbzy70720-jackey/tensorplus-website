@@ -21,4 +21,260 @@ export const en: Dict = {
     bookDemo: "Book a Demo →",
     copyright: (year: number) => `© ${year} Beijing TensorPlus Technology Co., Ltd. All rights reserved.`,
   },
+  hero: {
+    tagline: "Enabling machines to understand and work in the real world",
+    subtitle1: "High-precision 3D perception + outdoor operation robots",
+    subtitle2:
+      "Turnkey intelligent solutions for forestry, solar, power, oil & gas, and agriculture",
+    viewSolutions: "View Solutions",
+    bookDemo: "Book a Demo →",
+  },
+  home: {
+    productsTitle: "Core Solutions",
+    productsSubtitle:
+      "Two core product lines covering the full loop from perception to execution",
+    industriesTitle: "Industry Applications",
+    industriesSubtitle:
+      "Proven across four key industries, deployed at leading customers",
+    statsTitle: "Key Advantages",
+    statsSubtitle: "Extreme accuracy and reliability in the most demanding environments",
+    ctaTitle: "Ready to automate your outdoor operations?",
+    ctaDesc:
+      "Whether you build robots or run field operations, we deliver industry-leading, cost-effective 3D perception and outdoor robot solutions.",
+    ctaButton: "Book a Product Demo",
+    card1Title: "High-Precision 3D Perception",
+    card1Desc:
+      "Industry-leading outdoor 3D cameras and object-recognition algorithms deliver sub-millimeter accuracy and strong resistance to light and shadow, with proven deployments across solar, forestry, power, and more.",
+    card2Title: "Outdoor Operation Robots",
+    card2Desc:
+      "Autonomous navigation (SLAM + path planning + obstacle avoidance) plus autonomous execution enables fully automatic travel and precise operation over complex outdoor terrain.",
+    learnMore: "Learn More",
+    industries: [
+      {
+        name: "Solar",
+        description: "Automated installation, cleaning, and maintenance of PV modules",
+      },
+      {
+        name: "Forestry",
+        description: "End-to-end intelligence from planting through production",
+      },
+      {
+        name: "Oil & Gas",
+        description: "Intelligent drilling, plus pipeline installation and maintenance",
+      },
+      {
+        name: "Power",
+        description: "Intelligent installation and maintenance of power equipment",
+      },
+    ],
+    stats: [
+      { display: "<0.1mm, 0.05°", label: "3D Perception Accuracy" },
+      { display: "99.999%", label: "Action Execution Success Rate" },
+      {
+        display: "Outdoor-ready",
+        label: "Unaffected by strong sunlight, backlight, and other extremes",
+      },
+    ],
+  },
+  perception: {
+    metaTitle: "3D Perception",
+    metaDescription:
+      "High-precision 3D cameras and object-recognition algorithms with sub-millimeter accuracy and strong-light immunity. Turnkey vision solutions for solar, power, forestry, and oil & gas.",
+    heroTitle: "Outdoor High-Precision 3D Perception",
+    heroTagline: "Helping machines see the world at sub-millimeter accuracy",
+    heroDescription:
+      "An outdoor high-precision 3D perception system for robots — combining rugged outdoor 3D cameras with robot 3D perception algorithms to deliver turnkey vision solutions.",
+    capabilitiesTitle: "Core Capabilities",
+    capabilitiesSubtitle:
+      "Integrated hardware and software — the full stack from camera to algorithm",
+    seriesTitle: "Product Series",
+    seriesSubtitle: "Three models covering a range of application scenarios",
+    scenariosTitle: "Applications",
+    scenariosSubtitle:
+      "Validated in deployment with leading customers across industries",
+    features: [
+      {
+        title: "High-Precision 3D Camera",
+        description:
+          "Sub-millimeter 3D imaging accuracy on common materials, even under harsh outdoor conditions such as strong sunlight and backlight. Stable and interference-resistant, delivering high-quality point clouds and color images.",
+        highlight: "Accuracy: <0.1mm",
+      },
+      {
+        title: "Object Recognition Algorithms",
+        description:
+          "Pose-estimation algorithms for PV modules, mounting frames, logs, and more. Easily integrated into robots for arm guidance, precise measurement, and localization.",
+        highlight: "Recognition accuracy: 99.8%",
+      },
+      {
+        title: "All-Weather Outdoor Adaptation",
+        description:
+          "Purpose-built for challenging outdoor lighting — stable under strong sunlight, shadow, and backlight. Long-term validated at solar farms, forest plantations, and oil fields.",
+        highlight: "IP65 ingress protection",
+      },
+    ],
+    products: [
+      {
+        name: "Tensor Plus",
+        specs: [
+          { param: "Dimensions", value: "275×125×81.5mm" },
+          { param: "Weight", value: "2.1kg" },
+          { param: "Power Supply", value: "12V DC" },
+          { param: "Peak Power", value: "30W" },
+          { param: "Communication", value: "Gigabit Ethernet" },
+          { param: "Operating Temperature", value: "-20°C to +60°C" },
+          { param: "Ingress Protection", value: "IP65" },
+        ],
+        performance: [
+          { param: "Resolution", value: "Color image: 4056×3040; 3D image: 4056×3040" },
+          { param: "Field of View", value: "Horizontal: 76°, Vertical: 61°" },
+          { param: "Imaging Speed", value: "8~12s@4K" },
+          { param: "Working Distance", value: "0.8~2.5m" },
+          { param: "Z Accuracy", value: "0.27mm@1.2m" },
+          { param: "Output Data", value: "RGB + aligned 3D image" },
+          { param: "Programming Interface", value: "C++ / Python SDK" },
+        ],
+      },
+      {
+        name: "Tensor Eye",
+        specs: [
+          { param: "Dimensions", value: "246×143×81mm" },
+          { param: "Weight", value: "2.1kg" },
+          { param: "Power Supply", value: "12V DC" },
+          { param: "Peak Power", value: "15W" },
+          { param: "Communication", value: "Gigabit Ethernet" },
+          { param: "Operating Temperature", value: "-20°C to +60°C" },
+          { param: "Ingress Protection", value: "IP65" },
+        ],
+        performance: [
+          { param: "Resolution", value: "Color image: 3072×2048; 3D image: 3072×2048" },
+          { param: "Field of View", value: "Horizontal: 55.6°, Vertical: 41.7°" },
+          { param: "Imaging Speed", value: "4~8s@4K" },
+          { param: "Working Distance", value: "0.8~2.5m" },
+          { param: "Z Accuracy", value: "0.27mm@1.2m" },
+          { param: "Output Data", value: "RGB + aligned 3D image" },
+          { param: "Programming Interface", value: "C++ / Python SDK" },
+        ],
+      },
+      {
+        name: "Tensor Mini",
+        specs: [
+          { param: "Dimensions", value: "126×147×81mm" },
+          { param: "Weight", value: "1.1kg" },
+          { param: "Power Supply", value: "12V DC" },
+          { param: "Power", value: "15W" },
+          { param: "Communication", value: "Gigabit Ethernet" },
+          { param: "Operating Temperature", value: "-20°C to +60°C" },
+          { param: "Ingress Protection", value: "IP65" },
+        ],
+        performance: [
+          { param: "Resolution", value: "Color image: 1536×1024; 3D image: 1536×1024" },
+          { param: "Field of View", value: "Horizontal: 55.6°, Vertical: 41.7°" },
+          { param: "Imaging Speed", value: "1~4s@4K" },
+          { param: "Working Distance", value: "0.4~1.3m" },
+          { param: "Z Accuracy", value: "0.10mm@0.4m" },
+          { param: "Output Data", value: "RGB + aligned 3D image" },
+          { param: "Programming Interface", value: "C++ / Python SDK" },
+        ],
+      },
+    ],
+    scenarios: [
+      {
+        name: "PV Module Installation Robot",
+        description:
+          "The 3D vision system precisely computes the installation pose of every PV module and guides the robotic arm through fully automated assembly, including bolt fastening.",
+        points: [
+          "Module pose estimation accurate to ±0.5mm, ±0.1°",
+          "Supports a variety of PV modules and mounting frames",
+          "Stable operation under strong sunlight",
+        ],
+      },
+      {
+        name: "Intelligent Log Measurement",
+        description:
+          "In forestry, 3D cameras rapidly scan log piles to precisely measure the diameter and volume of each log for trading, handover, and production management.",
+        points: [
+          "Single-scan measurement time <25s",
+          "Average diameter error <±2mm",
+          "Supports scaling standards worldwide",
+        ],
+      },
+    ],
+  },
+  robot: {
+    metaTitle: "Outdoor Operation Robots",
+    metaDescription:
+      "Outdoor operation robots with autonomous navigation (SLAM + path planning + obstacle avoidance) and autonomous execution, reliably performing complex tasks for agriculture, forestry, oil & gas, and power.",
+    heroTitle: "Outdoor Operation Robots",
+    heroTagline: "3D perception + autonomous navigation + autonomous execution",
+    heroDescription:
+      "Fully autonomous outdoor robots that fuse sub-millimeter 3D perception, all-terrain autonomous navigation, and high-precision execution into one closed loop from perception to action.",
+    highlightsTitle: "Technology Highlights",
+    highlightsSubtitle: "A fully autonomous closed loop from perception to execution",
+    specsTitle: "Specifications",
+    specsSubtitle: "Industrial all-terrain mobile platform parameters",
+    techHighlights: [
+      {
+        title: "3D Perception",
+        description:
+          "Sub-millimeter 3D imaging accuracy on common materials under harsh outdoor conditions such as strong sunlight and backlight — stable and interference-resistant. High-quality point clouds and color images provide excellent input for vision algorithms.",
+        highlight: "3D imaging accuracy: sub-millimeter",
+        subItems: [
+          { title: "Strong Sunlight", description: "Stable imaging under direct sunlight, immune to ambient light." },
+          { title: "High Reflectivity", description: "Precise capture of metal, water, and other reflective surfaces with complete point clouds." },
+          { title: "Backlight", description: "Image quality holds up in backlit scenes with no loss of detail." },
+        ],
+      },
+      {
+        title: "Autonomous Navigation",
+        description:
+          "Fully autonomous navigation over complex outdoor terrain — the robot explores, perceives its surroundings, plans its path, and controls chassis motion.",
+        highlight: "RTK positioning accuracy: ±2cm",
+        subItems: [
+          { title: "Environmental Perception", description: "Multi-sensor 3D perception builds precise 3D digital maps and task maps." },
+          { title: "Autonomous Control", description: "End-to-end path planning + chassis control fused with 3D-grid path planning for high precision and reliability, handling complex corner cases." },
+        ],
+      },
+      {
+        title: "Autonomous Execution",
+        description:
+          "Automatically plans tasks and generates execution schemes with minimal human intervention. High-precision 3D perception guides the robotic arm for accurate, reliable operation with multi-tool end-effector switching.",
+        highlight: "Repeatable operation accuracy: ±0.5mm",
+        subItems: [
+          { title: "Task Planning", description: "Automatically decomposes tasks and generates execution sequences, minimizing human intervention." },
+          { title: "End-Effector Switching", description: "Automatic switching between multiple tools to suit different tasks." },
+          { title: "Precise Manipulation", description: "3D perception guides the arm with ±0.5mm repeatable accuracy." },
+        ],
+      },
+    ],
+    specs: [
+      { param: "Dimensions", value: "1832×1100×1400mm" },
+      { param: "Weight", value: "1750kg" },
+      { param: "Power", value: "Electric" },
+      { param: "Max Speed", value: "12km/h" },
+      { param: "Max Gradeability", value: "30°" },
+      { param: "Operating Temperature", value: "-20°C to +60°C" },
+      { param: "Ingress Protection", value: "IP65" },
+      { param: "Battery Life", value: "5h" },
+      { param: "Control Mode", value: "Vision-guided autonomous + planning" },
+      { param: "Chassis Type", value: "Tracked" },
+    ],
+  },
+  product: {
+    specParam: "Parameter",
+    specValue: "Specification",
+    specParams: "Specifications",
+    performance: "Performance",
+    productImage: "Product image",
+    prevProduct: "Previous product",
+    nextProduct: "Next product",
+    productIndex: (n: number) => `Product ${n}`,
+    techHighlightAlt: "technology highlights",
+    scenarioAlt: "application scenario",
+  },
+  carousel: {
+    prevImage: "Previous",
+    nextImage: "Next",
+    imageIndex: (n: number) => `Image ${n}`,
+    noImage: "No image",
+  },
 };

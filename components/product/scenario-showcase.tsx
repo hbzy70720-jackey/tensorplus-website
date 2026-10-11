@@ -3,6 +3,7 @@
 import { Check } from "lucide-react";
 import ScrollReveal from "@/components/ui/scroll-reveal";
 import ImageCarousel from "@/components/ui/image-carousel";
+import { useDict } from "@/lib/i18n";
 
 interface Scenario {
   name: string;
@@ -19,6 +20,8 @@ interface ScenarioShowcaseProps {
 }
 
 export default function ScenarioShowcase({ scenarios }: ScenarioShowcaseProps) {
+  const t = useDict();
+
   return (
     <div className="space-y-14">
       {scenarios.map((scenario, i) => (
@@ -36,7 +39,7 @@ export default function ScenarioShowcase({ scenarios }: ScenarioShowcaseProps) {
               <ImageCarousel
                 images={scenario.images || []}
                 folder={scenario.imageFolder || ""}
-                alt={`${scenario.name} 应用场景`}
+                alt={`${scenario.name} ${t.product.scenarioAlt}`}
               />
             </div>
 

@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductSpecCard from "@/components/product/product-spec-card";
+import { useDict } from "@/lib/i18n";
 
 interface SpecRow {
   param: string;
@@ -40,6 +41,7 @@ const slideVariants = {
 export default function ProductCarousel({ products }: ProductCarouselProps) {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(0);
+  const t = useDict();
 
   const goTo = useCallback(
     (index: number) => {
@@ -95,7 +97,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
         <button
           onClick={goPrev}
           className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-gray-200 bg-white p-3 shadow-md transition-all hover:scale-110 hover:shadow-lg hover:border-gray-300"
-          aria-label="上一个产品"
+          aria-label={t.product.prevProduct}
         >
           <ChevronLeft className="h-5 w-5 text-[var(--text-dark)]" />
         </button>
@@ -120,7 +122,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
         <button
           onClick={goNext}
           className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full border border-gray-200 bg-white p-3 shadow-md transition-all hover:scale-110 hover:shadow-lg hover:border-gray-300"
-          aria-label="下一个产品"
+          aria-label={t.product.nextProduct}
         >
           <ChevronRight className="h-5 w-5 text-[var(--text-dark)]" />
         </button>
@@ -135,7 +137,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
             className={`h-2 rounded-full transition-all duration-300 ${
               i === current ? "w-8 bg-[var(--accent)]" : "w-2 bg-gray-300 hover:bg-gray-400"
             }`}
-            aria-label={`第 ${i + 1} 个产品`}
+            aria-label={t.product.productIndex(i + 1)}
           />
         ))}
         <span className="ml-2 text-sm font-medium text-[var(--text-muted)]">

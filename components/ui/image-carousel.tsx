@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SmartImage from "@/components/ui/smart-image";
 import { imageCandidates } from "@/lib/image";
+import { useDict } from "@/lib/i18n";
 
 interface ImageCarouselProps {
   /** 图片文件名数组（不含扩展名，自动匹配格式），例如 ["perception-pv-1", "perception-pv-2"] */
@@ -25,6 +26,7 @@ export default function ImageCarousel({
 }: ImageCarouselProps) {
   const [current, setCurrent] = useState(0);
   const [loaded, setLoaded] = useState<Record<number, boolean>>({});
+  const t = useDict();
 
   // 切换图片时预加载相邻图片
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function ImageCarousel({
           heightClass
         )}
       >
-        <p className="text-sm text-[var(--text-muted)]">暂无图片</p>
+        <p className="text-sm text-[var(--text-muted)]">{t.carousel.noImage}</p>
       </div>
     );
   }
@@ -109,14 +111,14 @@ export default function ImageCarousel({
             <button
               onClick={prev}
               className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-700 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:shadow-lg"
-              aria-label="上一张"
+              aria-label={t.carousel.prevImage}
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               onClick={next}
               className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-700 shadow-md backdrop-blur-sm transition-all hover:bg-white hover:shadow-lg"
-              aria-label="下一张"
+              aria-label={t.carousel.nextImage}
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -137,7 +139,7 @@ export default function ImageCarousel({
                   ? "w-6 bg-[var(--accent)]"
                   : "w-2 bg-gray-300 hover:bg-gray-400"
               )}
-              aria-label={`第 ${i + 1} 张图片`}
+              aria-label={t.carousel.imageIndex(i + 1)}
             />
           ))}
         </div>

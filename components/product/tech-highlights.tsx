@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import ScrollReveal from "@/components/ui/scroll-reveal";
 import ImageCarousel from "@/components/ui/image-carousel";
+import { useDict } from "@/lib/i18n";
 
 interface TechSubItem {
   icon: ReactNode;
@@ -26,6 +27,8 @@ interface TechHighlightsProps {
 }
 
 export default function TechHighlights({ items }: TechHighlightsProps) {
+  const t = useDict();
+
   return (
     <div className="space-y-20">
       {items.map((item, i) => (
@@ -43,7 +46,7 @@ export default function TechHighlights({ items }: TechHighlightsProps) {
               <ImageCarousel
                 images={item.images || []}
                 folder={item.imageFolder || ""}
-                alt={`${item.title} 技术亮点`}
+                alt={`${item.title} ${t.product.techHighlightAlt}`}
               />
             </div>
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SmartImage from "@/components/ui/smart-image";
 import { ImageIcon } from "lucide-react";
+import { useDict } from "@/lib/i18n";
 
 interface SpecRow {
   param: string;
@@ -55,6 +56,7 @@ export default function ProductSpecCard({
 }: ProductSpecCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const t = useDict();
 
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[var(--shadow-card)]">
@@ -68,7 +70,7 @@ export default function ProductSpecCard({
           {(imageError || !imageLoaded) && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-1 bg-white/80 backdrop-blur-[2px] text-[var(--text-muted)]">
               <ImageIcon className="h-10 w-10 opacity-30" />
-              <span className="text-sm opacity-50">产品图片</span>
+              <span className="text-sm opacity-50">{t.product.productImage}</span>
               <span className="text-xs opacity-35">{imagePlaceholder}</span>
             </div>
           )}
@@ -84,8 +86,8 @@ export default function ProductSpecCard({
 
         {/* 右侧：规格参数 + 性能指标 */}
         <div className="flex min-w-0 flex-1 flex-col gap-5">
-          <MiniSpecTable title="规格参数" rows={specs} />
-          <MiniSpecTable title="性能指标" rows={performance} />
+          <MiniSpecTable title={t.product.specParams} rows={specs} />
+          <MiniSpecTable title={t.product.performance} rows={performance} />
         </div>
       </div>
     </div>

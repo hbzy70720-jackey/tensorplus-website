@@ -54,7 +54,7 @@ export default function Nav() {
           {/* Logo：完整 logo 图片（图标 + TENSOR⁺ 文字） */}
           <Link
             href={localizedHref("/", lang)}
-            aria-label="TensorPlus 首页"
+            aria-label={`TensorPlus ${t.nav.home}`}
             className="flex items-center"
           >
             <img

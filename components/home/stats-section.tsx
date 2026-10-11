@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import ScrollReveal from "@/components/ui/scroll-reveal";
+import { useDict } from "@/lib/i18n";
 
 interface StatItem {
   /** 大字展示内容 */
@@ -16,10 +17,11 @@ interface StatItem {
   decimals?: number;
 }
 
-const stats: StatItem[] = [
-  { display: "<0.1mm, 0.05°", label: "3D感知精度" },
-  { display: "99.999%", label: "动作执行成功率", animate: true, target: 99.999, decimals: 3 },
-  { display: "户外场景可用", label: "不受强阳光、逆光等极端条件干扰" },
+// 数值动画元数据（不可翻译的动画参数），与 t.home.stats 按索引对齐
+const statMeta: Array<Partial<StatItem>> = [
+  {},
+  { animate: true, target: 99.999, decimals: 3 },
+  {},
 ];
 
 function AnimatedStat({ target, decimals = 1 }: { target: number; decimals: number }) {
@@ -91,6 +93,9 @@ function StatCard({ stat }: { stat: StatItem }) {
 }
 
 export default function StatsSection() {
+  const t = useDict();
+  const stats: StatItem[] = t.home.stats.map((s, i) => ({ ...s, ...statMeta[i] }));
+
   return (
     <ScrollReveal>
       <div className="grid gap-8 sm:grid-cols-3">

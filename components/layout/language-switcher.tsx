@@ -14,6 +14,13 @@ export default function LanguageSwitcher({ dark = false }: { dark?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  // 路由切换时关闭下拉（渲染期调整状态，避免在 effect 内同步 setState）
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setOpen(false);
+  }
+
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
@@ -21,8 +28,6 @@ export default function LanguageSwitcher({ dark = false }: { dark?: boolean }) {
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
-
-  useEffect(() => setOpen(false), [pathname]);
 
   return (
     <div ref={ref} className="relative">

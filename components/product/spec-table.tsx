@@ -1,3 +1,7 @@
+"use client";
+
+import { useDict } from "@/lib/i18n";
+
 interface Spec {
   param: string;
   value: string;
@@ -8,16 +12,18 @@ interface SpecTableProps {
 }
 
 export default function SpecTable({ specs }: SpecTableProps) {
+  const t = useDict();
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200">
       <table className="w-full">
         <thead>
           <tr className="bg-gray-50">
             <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              参数
+              {t.product.specParam}
             </th>
             <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              规格
+              {t.product.specValue}
             </th>
           </tr>
         </thead>
