@@ -7,14 +7,9 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Button from "@/components/ui/button";
 import Container from "@/components/layout/container";
-
-const navLinks = [
-  { href: "/", label: "首页" },
-  { href: "/3d-perception", label: "3D感知方案" },
-  { href: "/robot", label: "户外作业机器人" },
-  { href: "/cases", label: "客户案例" },
-  { href: "/about", label: "关于我们" },
-];
+import { useDict, useLocale } from "@/lib/i18n";
+import { localizedHref, stripLocalePrefix } from "@/lib/locale-link";
+import LanguageSwitcher from "@/components/layout/language-switcher";
 
 // Logo 图片路径：直接用「完整 logo（图标 + TENSOR⁺ 文字）」图片。
 // dark 版用在黑底（首页），white 版用在白底（其他页 / 滚动后）。
@@ -25,7 +20,19 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const isDarkPage = pathname === "/";
+  const t = useDict();
+  const lang = useLocale();
+
+  const navLinks = [
+    { href: "/", label: t.nav.home },
+    { href: "/3d-perception", label: t.nav.perception },
+    { href: "/robot", label: t.nav.robot },
+    { href: "/cases", label: t.nav.cases },
+    { href: "/about", label: t.nav.about },
+  ];
+
+  // 首页（/ 或 /en）黑底；其余页白底。rewrite 后 usePathname 仍返回原始路径，故无需处理 /zh。
+  const isDarkPage = stripLocalePrefix(pathname) === "/";
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -46,7 +53,7 @@ export default function Nav() {
         <div className="flex h-28 items-center justify-between">
           {/* Logo：完整 logo 图片（图标 + TENSOR⁺ 文字） */}
           <Link
-            href="/"
+            href={localizedHref("/", lang)}
             aria-label="TensorPlus 首页"
             className="flex items-center"
           >
@@ -62,10 +69,10 @@ export default function Nav() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={localizedHref(link.href, lang)}
                 className={cn(
                   "rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                  pathname === link.href
+                  stripLocalePrefix(pathname) === link.href
                     ? "text-[var(--accent)]"
                     : scrolled || !isDarkPage
                     ? "text-[var(--text-muted)] hover:text-[var(--text-dark)]"
@@ -75,10 +82,11 @@ export default function Nav() {
                 {link.label}
               </Link>
             ))}
-            <div className="ml-4">
-              <Button href="/contact" size="sm">
-                预约演示
+            <div className="ml-4 flex items-center gap-2">
+              <Button href={localizedHref("/contact", lang)} size="sm">
+                {t.nav.bookDemo}
               </Button>
+              <LanguageSwitcher dark={!scrolled && isDarkPage} />
             </div>
           </div>
 
@@ -116,11 +124,11 @@ export default function Nav() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={localizedHref(link.href, lang)}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
                   "block rounded-lg px-4 py-3 text-base font-medium transition-colors",
-                  pathname === link.href
+                  stripLocalePrefix(pathname) === link.href
                     ? "text-[var(--accent)] bg-blue-50"
                     : "text-[var(--text-dark)] hover:bg-gray-50"
                 )}
@@ -128,10 +136,11 @@ export default function Nav() {
                 {link.label}
               </Link>
             ))}
-            <div className="mt-3 px-4">
-              <Button href="/contact" className="w-full">
-                预约演示
+            <div className="mt-3 flex flex-col gap-2 px-4">
+              <Button href={localizedHref("/contact", lang)} className="w-full">
+                {t.nav.bookDemo}
               </Button>
+              <LanguageSwitcher />
             </div>
           </div>
         )}

@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 import Container from "@/components/layout/container";
+import { useDict, useLocale } from "@/lib/i18n";
+import { localizedHref } from "@/lib/locale-link";
 
 export default function Footer() {
+  const t = useDict();
+  const lang = useLocale();
+
   return (
     <footer className="bg-[var(--bg-dark)] text-[var(--text-light)]">
       <Container className="py-12">
@@ -10,61 +17,61 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link
-              href="/"
+              href={localizedHref("/", lang)}
               className="font-[family-name:var(--font-heading)] text-xl font-bold"
             >
               <span className="gradient-text">Tensor</span>
               <span>Plus</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-[var(--text-muted)]">
-              北京张量无限科技有限公司 — 专注于高精度3D感知与户外作业机器人解决方案。
+              {t.footer.brandDesc}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">
-              快速链接
+              {t.footer.quickLinks}
             </h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
-                  href="/3d-perception"
+                  href={localizedHref("/3d-perception", lang)}
                   className="text-[var(--text-muted)] transition-colors hover:text-white"
                 >
-                  3D感知方案
+                  {t.nav.perception}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/robot"
+                  href={localizedHref("/robot", lang)}
                   className="text-[var(--text-muted)] transition-colors hover:text-white"
                 >
-                  户外作业机器人
+                  {t.nav.robot}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/cases"
+                  href={localizedHref("/cases", lang)}
                   className="text-[var(--text-muted)] transition-colors hover:text-white"
                 >
-                  客户案例
+                  {t.nav.cases}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/about"
+                  href={localizedHref("/about", lang)}
                   className="text-[var(--text-muted)] transition-colors hover:text-white"
                 >
-                  关于我们
+                  {t.nav.about}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href={localizedHref("/contact", lang)}
                   className="text-[var(--text-muted)] transition-colors hover:text-white"
                 >
-                  预约演示
+                  {t.nav.bookDemo}
                 </Link>
               </li>
             </ul>
@@ -73,7 +80,7 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">
-              联系方式
+              {t.footer.contact}
             </h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
@@ -104,17 +111,17 @@ export default function Footer() {
           {/* CTA */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">
-              商务合作
+              {t.footer.business}
             </h3>
             <p className="text-sm leading-relaxed text-[var(--text-muted)]">
-              如果您对我们的产品或方案感兴趣，欢迎随时联系。我们会在24小时内回复。
+              {t.footer.businessDesc}
             </p>
             <div className="mt-4">
               <Link
-                href="/contact"
+                href={localizedHref("/contact", lang)}
                 className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-[var(--accent)] px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-700"
               >
-                预约演示 →
+                {t.footer.bookDemo}
               </Link>
             </div>
           </div>
@@ -122,10 +129,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 border-t border-gray-800 pt-8 text-center text-sm text-[var(--text-muted)]">
-          <p>
-            &copy; {new Date().getFullYear()} 北京张量无限科技有限公司. All
-            rights reserved.
-          </p>
+          <p>{t.footer.copyright(new Date().getFullYear())}</p>
           <p className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <a
               href="https://beian.miit.gov.cn/"
