@@ -64,4 +64,10 @@ model CaseStudy {
   published    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  titleEn       String?
+  descriptionEn String?
+  contentEn     String?
+  customerEn    String?
+  industryEn    String?
+  tagsEn        String   @default("[]")
 }
