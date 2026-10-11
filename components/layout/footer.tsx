@@ -95,14 +95,16 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
                 <div className="space-y-1">
-                  <p className="text-sm text-[var(--text-muted)]">张先生：<span className="text-white">18616718989</span></p>
-                  <p className="text-sm text-[var(--text-muted)]">杨先生：<span className="text-white">18611406172</span></p>
+                  <p className="text-sm text-[var(--text-muted)]">{t.contact.zhangName}<span className="text-white">18616718989</span></p>
+                  <p className="text-sm text-[var(--text-muted)]">{t.contact.yangName}<span className="text-white">18611406172</span></p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
                 <span className="text-[var(--text-muted)]">
-                  北京市海淀区成府路45号中关村智造大街G座2层206
+                  {t.contact.addressLine1}
+                  <br />
+                  {t.contact.addressLine2}
                 </span>
               </li>
             </ul>

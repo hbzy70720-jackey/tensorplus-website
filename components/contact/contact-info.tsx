@@ -52,8 +52,8 @@ export default function ContactInfo() {
           <Phone className="mt-1 h-5 w-5 shrink-0 text-[var(--accent)]" />
           <div>
             <p className="text-xs text-[var(--text-muted)]">{t.contact.phone}</p>
-            <p className="text-sm text-[var(--text-muted)]">张先生：<span className="font-medium text-[var(--text-dark)]">18616718989</span></p>
-            <p className="text-sm text-[var(--text-muted)]">杨先生：<span className="font-medium text-[var(--text-dark)]">18611406172</span></p>
+            <p className="text-sm text-[var(--text-muted)]">{t.contact.zhangName}<span className="font-medium text-[var(--text-dark)]">18616718989</span></p>
+            <p className="text-sm text-[var(--text-muted)]">{t.contact.yangName}<span className="font-medium text-[var(--text-dark)]">18611406172</span></p>
           </div>
         </div>
 
@@ -62,9 +62,9 @@ export default function ContactInfo() {
           <div>
             <p className="text-xs text-[var(--text-muted)]">{t.contact.address}</p>
             <p className="text-sm text-[var(--text-dark)]">
-              北京市海淀区成府路45号
+              {t.contact.addressLine1}
               <br />
-              中关村智造大街G座2层206
+              {t.contact.addressLine2}
             </p>
           </div>
         </div>

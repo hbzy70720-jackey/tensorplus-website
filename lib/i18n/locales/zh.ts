@@ -277,6 +277,7 @@ export const zh = {
     timelineSubtitle: "从初创到行业领先的每一步",
     addressTitle: "找到我们",
     addressSubtitle: "欢迎来访，技术交流与合作洽谈",
+    companyName: "北京张量无限科技有限公司",
     milestones: [
       {
         year: "2018",
@@ -324,6 +325,10 @@ export const zh = {
     wechatOaAlt: "TensorPlus微信公众号二维码",
     wechatVideoAlt: "TensorPlus微信视频号二维码",
     copyEmail: "点击复制邮箱",
+    zhangName: "张先生：",
+    yangName: "杨先生：",
+    addressLine1: "北京市海淀区成府路45号",
+    addressLine2: "中关村智造大街G座2层206",
   },
   contactForm: {
     name: "姓名",

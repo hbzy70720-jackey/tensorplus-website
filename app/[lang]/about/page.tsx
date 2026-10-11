@@ -121,12 +121,12 @@ export default async function AboutPage({
             <MapPin className="mt-1 h-6 w-6 shrink-0 text-[var(--accent)]" />
             <div>
               <p className="font-semibold text-[var(--text-dark)]">
-                北京张量无限科技有限公司
+                {t.about.companyName}
               </p>
               <p className="mt-1 text-[var(--text-muted)]">
-                北京市海淀区成府路45号
+                {t.contact.addressLine1}
                 <br />
-                中关村智造大街G座2层206
+                {t.contact.addressLine2}
               </p>
             </div>
           </div>

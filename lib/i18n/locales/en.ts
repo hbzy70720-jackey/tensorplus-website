@@ -316,6 +316,7 @@ export const en: Dict = {
     timelineSubtitle: "Every step from startup to industry leadership",
     addressTitle: "Find Us",
     addressSubtitle: "Welcome for a visit, technical exchange, and partnership",
+    companyName: "Beijing TensorPlus Technology Co., Ltd.",
     milestones: [
       {
         year: "2018",
@@ -363,6 +364,10 @@ export const en: Dict = {
     wechatOaAlt: "TensorPlus WeChat Official Account QR code",
     wechatVideoAlt: "TensorPlus WeChat Channels QR code",
     copyEmail: "Click to copy email",
+    zhangName: "Mr. Zhang:",
+    yangName: "Mr. Yang:",
+    addressLine1: "No. 45 Chengfu Road, Haidian District, Beijing",
+    addressLine2: "Room 206, 2F, Building G, Zhongguancun Intelligent Manufacturing Street",
   },
   contactForm: {
     name: "Name",
