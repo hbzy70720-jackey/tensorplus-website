@@ -5,6 +5,7 @@ import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
 import ProductHero from "@/components/product/product-hero";
 import ProductCTA from "@/components/product/product-cta";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 
 export const metadata: Metadata = {
   title: "关于我们",
@@ -12,46 +13,25 @@ export const metadata: Metadata = {
     "北京张量无限科技有限公司，专注于户外机器人高精度3D感知与户外作业机器人解决方案。",
 };
 
-const milestones = [
-  {
-    year: "2018",
-    title: "公司成立",
-    desc: "北京张量无限科技有限公司在北京中关村智造大街成立，核心团队来自清华大学计算机系。",
-  },
-  {
-    year: "2022",
-    title: "首款3D相机发布",
-    desc: "推出首款户外高精度3D相机，实现毫米级精度成像，填补户外高精度3D成像的市场空白。",
-  },
-  {
-    year: "2024",
-    title: "光伏行业成功落地",
-    desc: "光伏组件安装机器人视觉系统成功签约多家机器人企业，成为业内领先的3D感知解决方案。",
-  },
-  {
-    year: "2025",
-    title: "第二代3D相机发布",
-    desc: "成像精度达到亚毫米级，且更为稳定，在各种极端的室外场景下均可稳定地生成高精度的3D图像。",
-  },
-  {
-    year: "2026",
-    title: "户外作业机器人发布",
-    desc: "推出户外作业机器人，融合自主导航与3D感知，成功应用于农业、林业等领域。",
-  },
-];
+export default async function AboutPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  const t = getDictionary(lang);
 
-export default function AboutPage() {
   return (
     <>
       {/* Hero */}
       <ProductHero
-        title="关于张量无限"
-        tagline="清华创业团队+多年技术积累沉淀"
+        title={t.about.heroTitle}
+        tagline={t.about.heroTagline}
         description={
           <>
-            我们致力于让每一台户外机器人都能看懂世界，自主行走。从3D感知到自主导航，
+            {t.about.heroDesc1}
             <br />
-            张量无限正在重新定义机器人与物理世界的交互方式。
+            {t.about.heroDesc2}
           </>
         }
         icon={<Building2 className="h-10 w-10 text-[var(--accent-glow)]" />}
@@ -61,26 +41,24 @@ export default function AboutPage() {
       <Section variant="light">
         <Container>
           <SectionHeading
-            title="使命与愿景"
-            subtitle="以技术创新为驱动，为全球户外机器人提供可靠的『眼睛』和『大脑』"
+            title={t.about.missionTitle}
+            subtitle={t.about.missionSubtitle}
           />
           <div className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2">
             <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-8">
               <h3 className="mb-4 font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--accent)]">
-                我们的使命
+                {t.about.missionCardTitle}
               </h3>
               <p className="leading-relaxed text-[var(--text-muted)]">
-                为户外机器人提供高可靠、高精度的感知与导航解决方案，
-                让机器人在真实世界中安全、精准、高效地工作。
+                {t.about.missionCardDesc}
               </p>
             </div>
             <div className="rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-white p-8">
               <h3 className="mb-4 font-[family-name:var(--font-heading)] text-xl font-bold text-[var(--accent-glow)]">
-                我们的愿景
+                {t.about.visionCardTitle}
               </h3>
               <p className="leading-relaxed text-[var(--text-muted)]">
-                成为全球领先的户外机器人智能系统提供商，
-                让每一台户外机器人都具备"看"和"走"的智能能力。
+                {t.about.visionCardDesc}
               </p>
             </div>
           </div>
@@ -91,14 +69,14 @@ export default function AboutPage() {
       <Section variant="gray">
         <Container>
           <SectionHeading
-            title="发展历程"
-            subtitle="从初创到行业领先的每一步"
+            title={t.about.timelineTitle}
+            subtitle={t.about.timelineSubtitle}
           />
           <div className="mx-auto max-w-3xl">
-            {milestones.map((m, i) => (
+            {t.about.milestones.map((m, i) => (
               <div key={m.year} className="relative flex gap-6 pb-8 last:pb-0">
                 {/* Line */}
-                {i < milestones.length - 1 && (
+                {i < t.about.milestones.length - 1 && (
                   <div className="absolute left-[27px] top-12 h-full w-px bg-gray-200" />
                 )}
                 {/* Dot */}
@@ -126,8 +104,8 @@ export default function AboutPage() {
       <Section variant="light">
         <Container className="text-center">
           <SectionHeading
-            title="找到我们"
-            subtitle="欢迎来访，技术交流与合作洽谈"
+            title={t.about.addressTitle}
+            subtitle={t.about.addressSubtitle}
           />
           <div className="mx-auto flex max-w-lg items-start gap-4 rounded-2xl border border-gray-100 bg-white p-8 text-left shadow-[var(--shadow-card)]">
             <MapPin className="mt-1 h-6 w-6 shrink-0 text-[var(--accent)]" />

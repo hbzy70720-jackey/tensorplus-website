@@ -2,8 +2,10 @@
 
 import { useState, FormEvent } from "react";
 import Button from "@/components/ui/button";
+import { useDict } from "@/lib/i18n";
 
 export default function ContactForm() {
+  const t = useDict();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -26,27 +28,27 @@ export default function ContactForm() {
 
     // Client-side validation
     if (!data.name.trim()) {
-      setError("请填写姓名");
+      setError(t.contactForm.requiredName);
       setLoading(false);
       return;
     }
     if (!data.company.trim()) {
-      setError("请填写公司/机构名称");
+      setError(t.contactForm.requiredCompany);
       setLoading(false);
       return;
     }
     if (!data.phone.trim()) {
-      setError("请填写电话号码");
+      setError(t.contactForm.requiredPhone);
       setLoading(false);
       return;
     }
     if (data.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      setError("请填写有效的邮箱地址");
+      setError(t.contactForm.invalidEmail);
       setLoading(false);
       return;
     }
     if (data.message.trim().length < 10) {
-      setError("需求描述至少需要10个字");
+      setError(t.contactForm.messageTooShort);
       setLoading(false);
       return;
     }
@@ -63,10 +65,10 @@ export default function ContactForm() {
         setSuccess(true);
         form.reset();
       } else {
-        setError(result.error || "提交失败，请稍后重试");
+        setError(result.error || t.contactForm.submitFailed);
       }
     } catch {
-      setError("网络错误，请稍后重试");
+      setError(t.contactForm.networkError);
     } finally {
       setLoading(false);
     }
@@ -90,10 +92,8 @@ export default function ContactForm() {
             />
           </svg>
         </div>
-        <h3 className="text-xl font-bold text-green-800">提交成功！</h3>
-        <p className="mt-2 text-green-600">
-          感谢您的咨询，我们会在24小时内回复。
-        </p>
+        <h3 className="text-xl font-bold text-green-800">{t.contactForm.success}</h3>
+        <p className="mt-2 text-green-600">{t.contactForm.successDesc}</p>
       </div>
     );
   }
@@ -105,7 +105,7 @@ export default function ContactForm() {
           htmlFor="name"
           className="mb-2 block text-sm font-medium text-[var(--text-dark)]"
         >
-          姓名 <span className="text-red-500">*</span>
+          {t.contactForm.name} <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -113,7 +113,7 @@ export default function ContactForm() {
           name="name"
           required
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          placeholder="您的姓名"
+          placeholder={t.contactForm.namePlaceholder}
         />
       </div>
 
@@ -122,7 +122,7 @@ export default function ContactForm() {
           htmlFor="company"
           className="mb-2 block text-sm font-medium text-[var(--text-dark)]"
         >
-          公司/机构 <span className="text-red-500">*</span>
+          {t.contactForm.company} <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -130,7 +130,7 @@ export default function ContactForm() {
           name="company"
           required
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          placeholder="公司或机构名称"
+          placeholder={t.contactForm.companyPlaceholder}
         />
       </div>
 
@@ -140,7 +140,7 @@ export default function ContactForm() {
           htmlFor="phone"
           className="mb-2 block text-sm font-medium text-[var(--text-dark)]"
         >
-          电话 <span className="text-red-500">*</span>
+          {t.contactForm.phone} <span className="text-red-500">*</span>
         </label>
         <input
           type="tel"
@@ -148,7 +148,7 @@ export default function ContactForm() {
           name="phone"
           required
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          placeholder="您的手机号码"
+          placeholder={t.contactForm.phonePlaceholder}
         />
       </div>
 
@@ -157,14 +157,14 @@ export default function ContactForm() {
           htmlFor="email"
           className="mb-2 block text-sm font-medium text-[var(--text-dark)]"
         >
-          邮箱
+          {t.contactForm.email}
         </label>
         <input
           type="email"
           id="email"
           name="email"
           className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          placeholder="your@company.com（选填）"
+          placeholder={t.contactForm.emailPlaceholder}
         />
       </div>
 
@@ -173,7 +173,7 @@ export default function ContactForm() {
           htmlFor="message"
           className="mb-2 block text-sm font-medium text-[var(--text-dark)]"
         >
-          需求描述 <span className="text-red-500">*</span>
+          {t.contactForm.message} <span className="text-red-500">*</span>
         </label>
         <textarea
           id="message"
@@ -182,7 +182,7 @@ export default function ContactForm() {
           rows={5}
           minLength={10}
           className="w-full resize-y rounded-lg border border-gray-300 px-4 py-3 text-sm transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
-          placeholder="请描述您的应用场景和需求（至少10个字）"
+          placeholder={t.contactForm.messagePlaceholder}
         />
       </div>
 
@@ -193,7 +193,7 @@ export default function ContactForm() {
       )}
 
       <Button type="submit" loading={loading} className="w-full" size="lg">
-        提交咨询
+        {t.contactForm.submit}
       </Button>
     </form>
   );
