@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Space_Grotesk, Noto_Sans_SC } from "next/font/google";
 import PageTracker from "@/components/analytics/page-tracker";
-import PublicShell from "@/components/layout/public-shell";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -45,19 +45,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const lang = (await headers()).get("x-locale") === "en" ? "en" : "zh-CN";
   return (
     <html
-      lang="zh-CN"
+      lang={lang}
       className={`${spaceGrotesk.variable} ${notoSansSC.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <PageTracker />
-        <PublicShell>{children}</PublicShell>
+        {children}
       </body>
     </html>
   );
