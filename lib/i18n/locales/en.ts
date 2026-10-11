@@ -30,6 +30,9 @@ export const en: Dict = {
     bookDemo: "Book a Demo →",
   },
   home: {
+    metaTitle: "Beijing TensorPlus Technology Co., Ltd. — High-Precision 3D Perception & Outdoor Robots",
+    metaDescription:
+      "Beijing TensorPlus Technology Co., Ltd. specializes in high-precision 3D perception and outdoor operation robots. Sub-millimeter 3D cameras, object recognition, and autonomous SLAM navigation deliver turnkey solutions for solar, power, forestry, oil & gas, and agriculture.",
     productsTitle: "Core Solutions",
     productsSubtitle:
       "Two core product lines covering the full loop from perception to execution",
@@ -278,6 +281,15 @@ export const en: Dict = {
     noImage: "No image",
   },
   cases: {
+    metaTitle: "Customer Stories",
+    metaDescription:
+      "TensorPlus customer case studies across solar, forestry, oil & gas, and power — outdoor robot 3D perception solutions.",
+    heroTitle: "Customer Stories",
+    heroTagline: "Real-world pain points, solved on the ground",
+    heroDescription:
+      "From solar to forestry, power to oil & gas — our solutions are proven with leading customers across industries, delivering measurable value for intelligent operations.",
+    listTitle: "Delivered Cases",
+    listSubtitle: "Every case is a commitment kept",
     all: "All",
     loading: "Loading...",
     emptyTitle: "Under Construction",
@@ -287,6 +299,9 @@ export const en: Dict = {
     backToList: "Back to Cases",
   },
   about: {
+    metaTitle: "About Us",
+    metaDescription:
+      "Beijing TensorPlus Technology Co., Ltd. — high-precision 3D perception and outdoor operation robot solutions.",
     heroTitle: "About Us",
     heroTagline: "A Tsinghua-founded team with years of deep technical expertise",
     heroDesc1: "We help every outdoor robot see the world and move on its own. From 3D perception to autonomous navigation, ",
@@ -330,6 +345,9 @@ export const en: Dict = {
     ],
   },
   contact: {
+    metaTitle: "Book a Demo",
+    metaDescription:
+      "Book a TensorPlus product demo — one-on-one technical demos for our 3D perception solutions and outdoor operation robots.",
     heroTitle: "Book a Demo",
     heroTagline: "One-on-one technical demo, 24-hour response",
     heroDescription: "Fill in the form below and our technical experts will contact you within 24 hours to arrange a product introduction and a one-on-one on-site demo.",

@@ -10,6 +10,7 @@ import { getDictionary } from "@/lib/i18n/dictionaries";
 import type { Locale } from "@/lib/i18n/config";
 import { industryLabel, industryColor } from "@/lib/industry";
 import { localizedHref } from "@/lib/locale-link";
+import { seoMeta } from "@/lib/seo";
 
 interface PageProps {
   params: Promise<{ lang: Locale; slug: string }>;
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description: description || (isEn ? `Customer story: ${title}` : `客户案例：${title}`),
+    ...seoMeta(`/cases/${slug}`, isEn),
   };
 }
 

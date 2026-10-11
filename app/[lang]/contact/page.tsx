@@ -6,12 +6,22 @@ import ProductHero from "@/components/product/product-hero";
 import ContactForm from "@/components/contact/contact-form";
 import ContactInfo from "@/components/contact/contact-info";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { seoMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "预约演示",
-  description:
-    "预约TensorPlus张量无限产品演示 — 获取3D感知方案、户外作业机器人一对一技术演示。",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isEn = lang === "en";
+  const t = getDictionary(lang);
+  return {
+    title: t.contact.metaTitle,
+    description: t.contact.metaDescription,
+    ...seoMeta("/contact", isEn),
+  };
+}
 
 export default async function ContactPage({
   params,

@@ -6,12 +6,22 @@ import Container from "@/components/layout/container";
 import ProductHero from "@/components/product/product-hero";
 import ProductCTA from "@/components/product/product-cta";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { seoMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "关于我们",
-  description:
-    "北京张量无限科技有限公司，专注于户外机器人高精度3D感知与户外作业机器人解决方案。",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isEn = lang === "en";
+  const t = getDictionary(lang);
+  return {
+    title: t.about.metaTitle,
+    description: t.about.metaDescription,
+    ...seoMeta("/about", isEn),
+  };
+}
 
 export default async function AboutPage({
   params,

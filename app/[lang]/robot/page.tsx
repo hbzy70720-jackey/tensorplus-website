@@ -9,12 +9,22 @@ import Section from "@/components/layout/section";
 import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { seoMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "户外作业机器人",
-  description:
-    "户外作业机器人，具备自主导航（SLAM+路径规划+避障）和自主执行能力，可精确可靠地完成各种复杂动作，适用于农业、林业、石油、电力等行业。",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isEn = lang === "en";
+  const t = getDictionary(lang);
+  return {
+    title: t.robot.metaTitle,
+    description: t.robot.metaDescription,
+    ...seoMeta("/robot", isEn),
+  };
+}
 
 // 子项图标与图片路径（不可翻译的展示元数据），与词典 robot.techHighlights 按索引对齐
 const techSubItemIcons: ReactNode[][] = [

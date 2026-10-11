@@ -25,6 +25,9 @@ export const zh = {
     bookDemo: "预约演示 →",
   },
   home: {
+    metaTitle: "北京张量无限科技有限公司 — 高精度3D感知与户外作业机器人",
+    metaDescription:
+      "北京张量无限科技有限公司，专注于户外机器人高精度3D感知方案与户外作业机器人。亚毫米级3D相机、物体识别算法、自主导航SLAM，为光伏、电力、林业、石油、农业提供开箱即用的智能解决方案。",
     productsTitle: "核心产品方案",
     productsSubtitle: "两大核心产品线，覆盖从感知到执行的完整闭环",
     industriesTitle: "行业应用场景",
@@ -239,6 +242,15 @@ export const zh = {
     noImage: "暂无图片",
   },
   cases: {
+    metaTitle: "客户案例",
+    metaDescription:
+      "TensorPlus 客户交付案例展示，涵盖光伏、林业、石油、电力等行业的户外机器人3D感知解决方案。",
+    heroTitle: "客户案例",
+    heroTagline: "聚焦行业真实痛点+深入客户作业一线",
+    heroDescription:
+      "从光伏到林业，从电力到石油——我们的解决方案已在多个行业头部客户落地验证，为客户的智能化作业创造可量化价值。",
+    listTitle: "交付案例",
+    listSubtitle: "每一个案例都是一份信任与承诺",
     all: "全部",
     loading: "加载中...",
     emptyTitle: "版块升级中",
@@ -248,6 +260,9 @@ export const zh = {
     backToList: "返回案例列表",
   },
   about: {
+    metaTitle: "关于我们",
+    metaDescription:
+      "北京张量无限科技有限公司，专注于户外机器人高精度3D感知与户外作业机器人解决方案。",
     heroTitle: "关于张量无限",
     heroTagline: "清华创业团队+多年技术积累沉淀",
     heroDesc1: "我们致力于让每一台户外机器人都能看懂世界，自主行走。从3D感知到自主导航，",
@@ -291,6 +306,9 @@ export const zh = {
     ],
   },
   contact: {
+    metaTitle: "预约演示",
+    metaDescription:
+      "预约TensorPlus张量无限产品演示 — 获取3D感知方案、户外作业机器人一对一技术演示。",
     heroTitle: "预约演示",
     heroTagline: "一对一技术演示，24小时快速响应",
     heroDescription: "填写下方表单，我们的技术专家将会在24小时内与您联系，为您安排产品介绍以及一对一现场产品演示。",

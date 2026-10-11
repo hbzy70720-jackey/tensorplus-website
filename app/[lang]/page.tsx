@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import HeroBanner from "@/components/hero/hero-banner";
 import ProductCards from "@/components/home/product-cards";
 import IndustryCarousel from "@/components/home/industry-carousel";
@@ -7,6 +8,22 @@ import Section from "@/components/layout/section";
 import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { seoMeta } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isEn = lang === "en";
+  const t = getDictionary(lang);
+  return {
+    title: t.home.metaTitle,
+    description: t.home.metaDescription,
+    ...seoMeta("", isEn),
+  };
+}
 
 export default async function HomePage({
   params,

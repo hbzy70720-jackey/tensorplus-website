@@ -9,12 +9,22 @@ import Section from "@/components/layout/section";
 import SectionHeading from "@/components/layout/section-heading";
 import Container from "@/components/layout/container";
 import { getDictionary } from "@/lib/i18n/dictionaries";
+import { seoMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "3D感知方案",
-  description:
-    "高精度3D相机 + 物体识别算法，亚毫米级精度，抗强光干扰。为光伏、电力、林业、石油等行业提供开箱即用的视觉解决方案。",
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const isEn = lang === "en";
+  const t = getDictionary(lang);
+  return {
+    title: t.perception.metaTitle,
+    description: t.perception.metaDescription,
+    ...seoMeta("/3d-perception", isEn),
+  };
+}
 
 // 图标与图片路径（不可翻译的展示元数据），与词典 perception.* 按索引对齐
 const featureIcons = [
