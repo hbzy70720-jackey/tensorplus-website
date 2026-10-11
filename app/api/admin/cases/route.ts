@@ -65,7 +65,23 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { title, description, content, coverImage, industry, customer, deliveryDate, tags, published } = body;
+  const {
+    title,
+    description,
+    content,
+    coverImage,
+    industry,
+    customer,
+    deliveryDate,
+    tags,
+    published,
+    titleEn,
+    descriptionEn,
+    contentEn,
+    customerEn,
+    industryEn,
+    tagsEn,
+  } = body;
 
   if (!title || !content) {
     return NextResponse.json({ error: "标题和内容为必填项" }, { status: 400 });
@@ -86,6 +102,12 @@ export async function POST(request: NextRequest) {
       deliveryDate: deliveryDate || null,
       tags: tags || "[]",
       published: published ?? false,
+      titleEn: titleEn || null,
+      descriptionEn: descriptionEn || null,
+      contentEn: contentEn || null,
+      customerEn: customerEn || null,
+      industryEn: industryEn || null,
+      tagsEn: tagsEn || "[]",
     },
   });
 

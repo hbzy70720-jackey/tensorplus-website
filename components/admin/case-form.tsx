@@ -16,6 +16,12 @@ interface CaseFormData {
   deliveryDate: string;
   tags: string;
   published: boolean;
+  titleEn: string;
+  descriptionEn: string;
+  contentEn: string;
+  customerEn: string;
+  industryEn: string;
+  tagsEn: string;
 }
 
 interface CaseFormProps {
@@ -31,6 +37,12 @@ interface CaseFormProps {
     deliveryDate: string | null;
     tags: string;
     published: boolean;
+    titleEn: string | null;
+    descriptionEn: string | null;
+    contentEn: string | null;
+    customerEn: string | null;
+    industryEn: string | null;
+    tagsEn: string;
   };
 }
 
@@ -63,12 +75,27 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     deliveryDate: initialData?.deliveryDate || "",
     tags: initialData?.tags || "[]",
     published: initialData?.published ?? false,
+    titleEn: initialData?.titleEn || "",
+    descriptionEn: initialData?.descriptionEn || "",
+    contentEn: initialData?.contentEn || "",
+    customerEn: initialData?.customerEn || "",
+    industryEn: initialData?.industryEn || "",
+    tagsEn: initialData?.tagsEn || "[]",
   });
 
   // 标签的原始文本（含逗号，用户可自由编辑；提交时再拆分成数组）
   const [tagsText, setTagsText] = useState(() => {
     try {
       return (JSON.parse(form.tags) as string[]).join("，");
+    } catch {
+      return "";
+    }
+  });
+
+  // 英文标签原始文本
+  const [tagsEnText, setTagsEnText] = useState(() => {
+    try {
+      return (JSON.parse(form.tagsEn) as string[]).join("，");
     } catch {
       return "";
     }
@@ -88,6 +115,7 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     const payload = {
       ...form,
       tags: tagsToJSON(tagsText),
+      tagsEn: tagsToJSON(tagsEnText),
       published: publishAfterSave ? true : form.published,
     };
 
@@ -140,6 +168,7 @@ export default function CaseForm({ initialData }: CaseFormProps) {
           body: JSON.stringify({
             ...form,
             tags: tagsToJSON(tagsText),
+            tagsEn: tagsToJSON(tagsEnText),
             published: form.published,
           }),
         });
@@ -161,7 +190,7 @@ export default function CaseForm({ initialData }: CaseFormProps) {
     return () => {
       if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     };
-  }, [form, tagsText]);
+  }, [form, tagsText, tagsEnText]);
 
   const inputClass =
     "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-[var(--text-dark)] transition-colors focus:border-[var(--accent)] focus:outline-none focus:ring-1 focus:ring-[var(--accent)]";
@@ -348,6 +377,88 @@ export default function CaseForm({ initialData }: CaseFormProps) {
                   }`}
                 />
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* 英文版分区 */}
+        <div className="rounded-2xl border border-blue-100 bg-blue-50/40 p-6">
+          <h2 className="mb-4 font-[family-name:var(--font-heading)] text-lg font-bold text-[var(--text-dark)]">
+            英文版 English
+          </h2>
+
+          <div className="space-y-5">
+            {/* 英文标题 */}
+            <div>
+              <label className={labelClass}>英文标题</label>
+              <input
+                type="text"
+                value={form.titleEn}
+                onChange={(e) => updateField("titleEn", e.target.value)}
+                className={inputClass}
+                placeholder="English title（留空则前台回退中文标题）"
+              />
+            </div>
+
+            {/* 英文摘要 */}
+            <div>
+              <label className={labelClass}>英文摘要</label>
+              <textarea
+                value={form.descriptionEn}
+                onChange={(e) => updateField("descriptionEn", e.target.value)}
+                rows={3}
+                className={inputClass}
+                placeholder="Short English summary for the case list page"
+              />
+            </div>
+
+            {/* 英文正文 */}
+            <div>
+              <label className={labelClass}>英文正文</label>
+              <RichTextEditor
+                content={form.contentEn}
+                onChange={(html) => updateField("contentEn", html)}
+              />
+            </div>
+
+            {/* 英文客户 + 行业 */}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className={labelClass}>英文客户名称</label>
+                <input
+                  type="text"
+                  value={form.customerEn}
+                  onChange={(e) => updateField("customerEn", e.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. a leading PV robotics company"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>英文行业</label>
+                <select
+                  value={form.industryEn}
+                  onChange={(e) => updateField("industryEn", e.target.value)}
+                  className={inputClass}
+                >
+                  <option value="">None</option>
+                  <option value="Solar">Solar</option>
+                  <option value="Forestry">Forestry</option>
+                  <option value="Oil & Gas">Oil & Gas</option>
+                  <option value="Power">Power</option>
+                </select>
+              </div>
+            </div>
+
+            {/* 英文标签 */}
+            <div>
+              <label className={labelClass}>英文标签（逗号分隔）</label>
+              <input
+                type="text"
+                value={tagsEnText}
+                onChange={(e) => setTagsEnText(e.target.value)}
+                className={inputClass}
+                placeholder="e.g. robot installation, 3D measurement, automation"
+              />
             </div>
           </div>
         </div>

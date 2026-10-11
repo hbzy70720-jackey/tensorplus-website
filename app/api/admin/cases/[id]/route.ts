@@ -29,7 +29,23 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { title, description, content, coverImage, industry, customer, deliveryDate, tags, published } = body;
+  const {
+    title,
+    description,
+    content,
+    coverImage,
+    industry,
+    customer,
+    deliveryDate,
+    tags,
+    published,
+    titleEn,
+    descriptionEn,
+    contentEn,
+    customerEn,
+    industryEn,
+    tagsEn,
+  } = body;
 
   const updated = await prisma.caseStudy.update({
     where: { id: caseId },
@@ -43,6 +59,12 @@ export async function PATCH(
       ...(deliveryDate !== undefined && { deliveryDate }),
       ...(tags !== undefined && { tags }),
       ...(published !== undefined && { published }),
+      ...(titleEn !== undefined && { titleEn }),
+      ...(descriptionEn !== undefined && { descriptionEn }),
+      ...(contentEn !== undefined && { contentEn }),
+      ...(customerEn !== undefined && { customerEn }),
+      ...(industryEn !== undefined && { industryEn }),
+      ...(tagsEn !== undefined && { tagsEn }),
     },
   });
 
