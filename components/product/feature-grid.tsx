@@ -19,8 +19,8 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
     <ScrollReveal stagger>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
-          <StaggerChild key={feature.title}>
-            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-[var(--shadow-card)] transition-all duration-[var(--duration-normal)] hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]">
+          <StaggerChild key={feature.title} className="h-full">
+            <div className="flex h-full flex-col rounded-2xl border border-gray-100 bg-white p-8 shadow-[var(--shadow-card)] transition-all duration-[var(--duration-normal)] hover:-translate-y-1 hover:shadow-[var(--shadow-card-hover)]">
               <div className="mb-5 inline-flex rounded-xl bg-blue-50 p-3">
                 {feature.icon}
               </div>
@@ -31,7 +31,7 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
                 {feature.description}
               </p>
               {feature.highlight && (
-                <p className="mt-3 text-sm font-semibold text-[var(--accent)]">
+                <p className="mt-auto pt-3 text-sm font-semibold text-[var(--accent)]">
                   {feature.highlight}
                 </p>
               )}
