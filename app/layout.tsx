@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Space_Grotesk, Noto_Sans_SC } from "next/font/google";
+import { Geist, Space_Grotesk, Noto_Sans_SC } from "next/font/google";
 import PageTracker from "@/components/analytics/page-tracker";
 import "./globals.css";
+
+const geist = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
+});
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -54,7 +59,7 @@ export default async function RootLayout({
   return (
     <html
       lang={lang}
-      className={`${spaceGrotesk.variable} ${notoSansSC.variable} h-full antialiased`}
+      className={`${geist.variable} ${spaceGrotesk.variable} ${notoSansSC.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <PageTracker />

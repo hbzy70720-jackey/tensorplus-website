@@ -59,6 +59,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 英文站使用 Geist（中文站保持 Space Grotesk + Noto Sans SC） */
+html[lang="en"] {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+}
+
 body {
   background: var(--bg-white);
   color: var(--text-dark);
