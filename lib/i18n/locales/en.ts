@@ -22,7 +22,7 @@ export const en: Dict = {
     copyright: (year: number) => `© ${year} Beijing TensorPlus Technology Co., Ltd. All rights reserved.`,
   },
   hero: {
-    tagline: "Enabling machines to understand and work in the real world",
+    tagline: "Enabling machines to perceive and operate in the real world",
     subtitle1: "High-precision 3D perception + field robots",
     subtitle2:
       "Turnkey intelligent solutions for forestry, solar, power, oil & gas, and agriculture",
@@ -41,9 +41,9 @@ export const en: Dict = {
       "Proven across four key industries, deployed at leading customers",
     statsTitle: "Key Advantages",
     statsSubtitle: "Extreme accuracy and reliability in the most demanding environments",
-    ctaTitle: "Ready to automate your outdoor operations?",
+    ctaTitle: "Ready to automate your field operations?",
     ctaDesc:
-      "Whether you build robots or run field operations, we deliver industry-leading, cost-effective 3D perception and outdoor robot solutions.",
+      "Whether you build robots or run field operations, we deliver industry-leading, cost-effective 3D perception and field robot solutions.",
     ctaButton: "Book a Product Demo",
     card1Title: "High-Precision 3D Perception",
     card1Desc:
@@ -210,7 +210,7 @@ export const en: Dict = {
     heroTitle: "Field Robots",
     heroTagline: "3D perception + autonomous navigation + autonomous execution",
     heroDescription:
-      "Fully autonomous outdoor robots that fuse sub-millimeter 3D perception, all-terrain autonomous navigation, and high-precision execution into one closed loop from perception to action.",
+      "Fully autonomous field robots that fuse sub-millimeter 3D perception, all-terrain autonomous navigation, and high-precision execution into one closed loop from perception to action.",
     highlightsTitle: "Technology Highlights",
     highlightsSubtitle: "A fully autonomous closed loop from perception to execution",
     specsTitle: "Specifications",
@@ -283,7 +283,7 @@ export const en: Dict = {
   cases: {
     metaTitle: "Customer Stories",
     metaDescription:
-      "TensorPlus customer case studies across solar, forestry, oil & gas, and power — outdoor robot 3D perception solutions.",
+      "TensorPlus customer case studies across solar, forestry, oil & gas, and power — field robot 3D perception solutions.",
     heroTitle: "Customer Stories",
     heroTagline: "Real-world pain points, solved on the ground",
     heroDescription:
@@ -303,15 +303,15 @@ export const en: Dict = {
     metaDescription:
       "Beijing TensorPlus Technology Co., Ltd. — high-precision 3D perception and field robot solutions.",
     heroTitle: "About Us",
-    heroTagline: "A Tsinghua-founded team with years of deep technical expertise",
-    heroDesc1: "We help every outdoor robot see the world and move on its own. From 3D perception to autonomous navigation, ",
+    heroTagline: "A Tsinghua alumni-founded team with years of deep technical expertise",
+    heroDesc1: "We help every field robot see the world and move on its own. From 3D perception to autonomous navigation, ",
     heroDesc2: "TensorPlus is redefining how machines interact with the physical world.",
     missionTitle: "Mission & Vision",
-    missionSubtitle: 'Driven by technology innovation, we equip outdoor robots worldwide with reliable "eyes" and "brains"',
+    missionSubtitle: 'Driven by technology innovation, we equip field robots worldwide with reliable "eyes" and "brains"',
     missionCardTitle: "Our Mission",
-    missionCardDesc: "Deliver highly reliable, high-precision perception and navigation solutions for outdoor robots, so they can work safely, precisely, and efficiently in the real world.",
+    missionCardDesc: "Deliver highly reliable, high-precision perception and navigation solutions for field robots, so they can work safely, precisely, and efficiently in the real world.",
     visionCardTitle: "Our Vision",
-    visionCardDesc: 'Become a world-leading provider of intelligent systems for outdoor robots, giving every outdoor robot the ability to "see" and "move" intelligently.',
+    visionCardDesc: 'Become a world-leading provider of intelligent systems for field robots, giving every field robot the ability to "see" and "move" intelligently.',
     timelineTitle: "Milestones",
     timelineSubtitle: "Every step from startup to industry leadership",
     addressTitle: "Find Us",
@@ -340,7 +340,7 @@ export const en: Dict = {
       },
       {
         year: "2026",
-        title: "Outdoor operation robot launched",
+        title: "Field robot launched",
         desc: "Launched our field robot, combining autonomous navigation and 3D perception, successfully applied in agriculture, forestry, and more.",
       },
     ],
